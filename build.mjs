@@ -16,7 +16,7 @@ import path from 'node:path';
 const CONFIG = {
   // Who is responsible for the data (KVKK "veri sorumlusu").
   controller: 'Dursun Melih Omaç',
-  email: '[destek@ornek.com]',
+  email: 'movieforus.destek@gmail.com',
   // Where the Supabase project runs. Established from the database host's
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
