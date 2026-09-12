@@ -34,3 +34,6 @@ mark { background: #ffd60a; color: #000; padding: 0 4px; border-radius: 4px; }
 .card p { margin: 0; color: var(--muted); font-size: 15px; }
 .links { margin-top: 24px; }
 footer { max-width: 820px; margin: 0 auto; padding: 24px; border-top: 1px solid var(--border); }
+footer p { color: var(--muted); margin: 6px 0; }
+/* TMDB's terms: its mark, smaller than MovieForUs's own. */
+.tmdb img { height: 14px; width: auto; display: block; margin-bottom: 8px; }

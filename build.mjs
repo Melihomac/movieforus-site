@@ -64,9 +64,12 @@ function page({ file, lang = 'tr', title, description, body }) {
 <main>
 ${body}
 </main>
-<footer>© ${new Date().getFullYear()} MovieForUs · ${lang === 'tr'
-    ? 'Film bilgileri ve görselleri TMDB tarafından sağlanır; MovieForUs, TMDB tarafından onaylanmış değildir.'
-    : 'Film data and images are provided by TMDB; MovieForUs is not endorsed or certified by TMDB.'}</footer>
+<footer>
+  <a class="tmdb" href="https://www.themoviedb.org/"><img src="tmdb-logo.svg" alt="TMDB"></a>
+  <p>This application uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.</p>
+  ${lang === 'tr' ? '<p>Bu uygulama TMDB’yi ve TMDB API’lerini kullanır, ancak TMDB tarafından onaylanmış, sertifikalandırılmış ya da başka bir şekilde desteklenmiş değildir.</p>' : ''}
+  <p>© ${new Date().getFullYear()} MovieForUs</p>
+</footer>
 </body>
 </html>
 `;
@@ -351,6 +354,9 @@ mark { background: #ffd60a; color: #000; padding: 0 4px; border-radius: 4px; }
 .card p { margin: 0; color: var(--muted); font-size: 15px; }
 .links { margin-top: 24px; }
 footer { max-width: 820px; margin: 0 auto; padding: 24px; border-top: 1px solid var(--border); }
+footer p { color: var(--muted); margin: 6px 0; }
+/* TMDB's terms: its mark, smaller than MovieForUs's own. */
+.tmdb img { height: 14px; width: auto; display: block; margin-bottom: 8px; }
 `);
 
 /* ------------------------------------------------------------------ */
