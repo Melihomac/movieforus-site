@@ -21,7 +21,7 @@ const CONFIG = {
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
   // Effective date of the privacy policy.
-  effective: '2026-09-12',
+  effective: '2026-09-13',
 };
 
 const app = path.join(process.env.HOME, 'Developer/MovieForUs');
@@ -128,7 +128,7 @@ ${section('2. Hangi verileri işliyoruz',
     'Film zevkin: ilk açılış anketindeki cevapların, kaydırdığın filmler (beğendin ya da geçtin), izleme listen ve verdiğin puanlar.',
     'Konum: izin verirsen cihazının hassas konumu ve bu konumdan bulunan şehir adı.',
     'Eşleşmeler ve mesajlar: kimlerle eşleştiğin, eşleşmelerinin durumu, gönderdiğin ve aldığın mesajlar, ortak odalar ve odalarda kaydırdığın filmler.',
-    'Güvenlik kayıtları: yaptığın ve hakkında yapılan şikayetler, engellediğin kişiler ve kullanım şartlarını kabul kayıtların.',
+    'Güvenlik kayıtları: yaptığın ve hakkında yapılan şikayetler, engellediğin kişiler, kullanım şartlarını kabul kayıtların ve profil fotoğraflarının otomatik kontrol sonuçları.',
     'Cihaz bilgisi: bildirim gönderebilmek için cihazına özel bildirim anahtarı.',
     'Teknik kayıtlar: sunucularımıza bağlandığında IP adresin ve istek bilgileri, servis sağlayıcılarımızın kayıtlarında tutulabilir.',
   ]),
@@ -140,14 +140,14 @@ ${section('3. Verilerini neden işliyoruz',
     'Konuma dayalı eşleşme (açık rıza): yalnızca 100 km içindeki kişilerle eşleşebilmen için mesafe hesaplamak. Konum iznini cihaz ayarlarından istediğin zaman geri alabilirsin; bu durumda eşleşme özelliği çalışmaz.',
     'Özel nitelikli veriler (açık rıza): cinsiyetin ve ilgilendiğin cinsiyetler, cinsel hayatına ilişkin bilgi ortaya koyabilir. Bu bilgileri yalnızca eşleşme önerisi için ve açık rızanla işleriz.',
     'Bildirimler (açık rıza): yeni eşleşme ve mesajları haber vermek. Bildirim iznini cihaz ayarlarından kapatabilirsin.',
-    'Topluluğun güvenliği (meşru menfaat ve hukuki yükümlülük): şikayetleri incelemek, kurallara aykırı içeriği kaldırmak, kötüye kullanımı önlemek ve yasal taleplere yanıt vermek.',
+    'Topluluğun güvenliği (meşru menfaat ve hukuki yükümlülük): profil fotoğraflarını başkalarına gösterilmeden önce otomatik olarak kontrol etmek, şikayetleri incelemek, kurallara aykırı içeriği kaldırmak, kötüye kullanımı önlemek ve yasal taleplere yanıt vermek. Otomatik kontrol, fotoğrafında çıplaklık, cinsel içerik, şiddet ya da kendine zarar verme olup olmadığına bakar; uygun bulunmayan fotoğraf silinir ve profilinde kullanılamaz. Bu karara itiraz etmek için bize yazabilirsin; itirazları bir kişi inceler.',
   ]))}
 
 ${section('4. Bilgilerini kimler görebilir',
   list([
     'Eşleştiğin kişiler: görünen adın, fotoğrafın, yaşın, boyun, sigara ve alkol bilgin, film alıntın, cinsiyetin, aranızdaki yuvarlanmış yaklaşık mesafe, ortak beğendiğiniz filmler ve uyum oranınız. Doğum tarihin ve tam konumun kimseye gösterilmez.',
     'Aynı odadaki kişiler: görünen adın ve emojin. Fotoğrafın yalnızca eşleştiğin kişilere gösterilir. Bir eşleşmeyi geçer ya da kişiyi engellersen fotoğrafına erişimi kapanır.',
-    'Moderatörler: yalnızca incelenen bir şikayetle ilgili bilgiler.',
+    'Moderatörler: yalnızca incelenen bir şikayetle ya da fotoğraf kontrolüne yapılan bir itirazla ilgili bilgiler.',
     'Yetkili kamu kurumları: yalnızca yasal bir zorunluluk olduğunda.',
   ]))}
 
@@ -156,6 +156,7 @@ ${section('5. Hizmet sağlayıcılar ve yurt dışına aktarım',
   list([
     `Supabase: veritabanı, kimlik doğrulama, fotoğraf depolama ve anlık iletişim altyapısı. Sunucu bölgesi: ${CONFIG.region.tr}.`,
     'Expo (650 Industries, ABD): bildirimlerin cihazına iletilmesi.',
+    'OpenAI (ABD): profil fotoğraflarının otomatik kontrolü. Yüklediğin fotoğraf yalnızca bu kontrol için gönderilir. OpenAI, API üzerinden gelen verileri model eğitiminde kullanmaz; kötüye kullanımı izlemek için en fazla 30 gün saklayabilir.',
     'Apple: bildirimlerin iOS cihazına ulaştırılması ve konumdan şehir adının bulunması.',
     'TMDB (The Movie Database): film bilgileri ve görselleri. Cihazın bu bilgileri doğrudan TMDB’den ister; TMDB bu sırada IP adresini ve film aramalarını görebilir.',
     'YouTube: bir fragmanı açtığında fragman YouTube’da açılır ve YouTube’un kendi gizlilik kuralları geçerli olur.',
@@ -164,7 +165,7 @@ ${section('5. Hizmet sağlayıcılar ve yurt dışına aktarım',
 ${section('6. Ne kadar süre saklıyoruz',
   list([
     'Hesabın açık olduğu sürece verilerini saklarız.',
-    'Hesabını uygulama içinden (Profil → Hesap → Hesabımı sil) sildiğinde profilin, fotoğrafların, film zevkin, izleme listen, kaydırmaların, eşleşmelerin, mesajların ve bildirim anahtarın hemen ve kalıcı olarak silinir.',
+    'Hesabını uygulama içinden (Profil → Hesap → Hesabımı sil) sildiğinde profilin, fotoğrafların ve kontrol kayıtları, film zevkin, izleme listen, kaydırmaların, eşleşmelerin, mesajların ve bildirim anahtarın hemen ve kalıcı olarak silinir.',
     'Topluluğun güvenliği için, bir kişi hakkında yapılan şikayet kayıtları o kişinin hesabı silindikten sonra en fazla 2 yıl saklanabilir.',
     'Servis sağlayıcılarımızın yedeklerinde ve teknik kayıtlarında kalan kopyalar, onların saklama döngüsü sonunda silinir.',
   ]))}
@@ -208,7 +209,7 @@ ${section('2. What we collect',
     'Film taste: your first-run survey answers, the films you swipe (liked or passed), your watchlist and ratings.',
     'Location: if you allow it, your device’s precise location and the city derived from it.',
     'Matches and messages: who you matched with, the state of each match, messages you send and receive, shared rooms and the films swiped in them.',
-    'Safety records: reports you file and reports about you, people you block, and your acceptances of the terms of use.',
+    'Safety records: reports you file and reports about you, people you block, your acceptances of the terms of use, and the results of the automatic checks on your profile photos.',
     'Device: a push notification token for your device.',
     'Technical logs: your IP address and request details may be recorded in our service providers’ logs when you connect.',
   ]),
@@ -220,14 +221,14 @@ ${section('3. Why we process it',
     'Location-based matching (consent): to calculate distance so that you are matched only with people within 100 km. You can withdraw location permission in your device settings at any time; matching then stops working.',
     'Special category data (explicit consent): your gender and the genders you are interested in may reveal information about your sex life or orientation. We use them only to suggest matches.',
     'Notifications (consent): to tell you about new matches and messages. You can turn them off in your device settings.',
-    'Community safety (legitimate interest and legal obligation): reviewing reports, removing content that breaks the rules, preventing abuse and responding to lawful requests.',
+    'Community safety (legitimate interest and legal obligation): checking profile photos automatically before anyone else can see them, reviewing reports, removing content that breaks the rules, preventing abuse and responding to lawful requests. The automatic check looks for nudity, sexual content, violence and self-harm; a photo that fails it is deleted and cannot be used on your profile. You can contest the decision by writing to us, and a person will review it.',
   ]))}
 
 ${section('4. Who can see your information',
   list([
     'People you match with: your display name, photo, age, height, smoking and drinking habits, film quote, gender, a rounded approximate distance between you, films you both liked and your compatibility score. Your date of birth and exact location are never shown.',
     'People in the same room: your display name and emoji. Your photo is shown only to people you are matched with, and access ends if the match is passed or blocked.',
-    'Moderators: only what relates to a report under review.',
+    'Moderators: only what relates to a report under review or to a contested photo check.',
     'Public authorities: only where the law requires it.',
   ]))}
 
@@ -236,6 +237,7 @@ ${section('5. Service providers and international transfers',
   list([
     `Supabase: database, authentication, photo storage and realtime infrastructure. Server region: ${CONFIG.region.en}.`,
     'Expo (650 Industries, USA): delivering push notifications.',
+    'OpenAI (USA): the automatic check of profile photos. A photo you upload is sent only for that check. OpenAI does not use data sent through its API to train models, and may keep it for up to 30 days to monitor abuse.',
     'Apple: delivering notifications to iOS devices and looking up a city name from a location.',
     'TMDB (The Movie Database): film information and images, requested directly from your device; TMDB can see your IP address and film searches.',
     'YouTube: trailers open on YouTube, where YouTube’s own privacy policy applies.',
@@ -244,7 +246,7 @@ ${section('5. Service providers and international transfers',
 ${section('6. How long we keep it',
   list([
     'We keep your data for as long as your account exists.',
-    'When you delete your account in the app (Profile → Account → Delete my account), your profile, photos, film taste, watchlist, swipes, matches, messages and push token are deleted immediately and permanently.',
+    'When you delete your account in the app (Profile → Account → Delete my account), your profile, photos and their check records, film taste, watchlist, swipes, matches, messages and push token are deleted immediately and permanently.',
     'For community safety, reports about a person may be kept for up to 2 years after that person’s account is deleted.',
     'Copies in our providers’ backups and technical logs are removed at the end of their retention cycles.',
   ]))}
