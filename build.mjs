@@ -21,7 +21,7 @@ const CONFIG = {
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
   // Effective date of the privacy policy.
-  effective: '2026-09-13',
+  effective: '2026-09-16',
 };
 
 const app = path.join(process.env.HOME, 'Developer/MovieForUs');
@@ -123,7 +123,7 @@ ${section('1. Veri sorumlusu',
 
 ${section('2. Hangi verileri işliyoruz',
   list([
-    'Hesap bilgileri: e-posta adresin ve şifren (şifren kimlik doğrulama sağlayıcımızda şifrelenmiş olarak saklanır; biz göremeyiz). Misafir olarak devam edersen yalnızca bir hesap kimliği oluşturulur.',
+    'Hesap bilgileri: Apple ya da Google ile giriş yaparsan o hesabın bize ilettiği e-posta adresin (Apple’da “E-postamı gizle”yi seçersen Apple’ın yönlendirme adresi), adın ve hesabına özel bir kimlik; şifren bize hiç gelmez. E-posta ve şifreyle açılmış hesaplarda e-posta adresin ve şifren (şifren kimlik doğrulama sağlayıcımızda şifrelenmiş olarak saklanır; biz göremeyiz). Apple ile girişte, hesabını sildiğinde Apple’daki bağlantıyı iptal edebilmek için Apple’ın verdiği bir erişim anahtarını saklarız. Misafir olarak devam edersen yalnızca bir hesap kimliği oluşturulur.',
     'Profil bilgileri: görünen adın, profil fotoğrafın, doğum tarihin, boyun, sigara ve alkol kullanımın, favori bir filmden alıntın, cinsiyetin ve eşleşme tercihlerin (ilgilendiğin cinsiyetler ve yaş aralığı).',
     'Film zevkin: ilk açılış anketindeki cevapların, kaydırdığın filmler (beğendin ya da geçtin), izleme listen, verdiğin puanlar ve oluşturduğun film listeleri (adları ve içindeki filmler).',
     'Konum: izin verirsen cihazının hassas konumu ve bu konumdan bulunan şehir adı.',
@@ -157,7 +157,8 @@ ${section('5. Hizmet sağlayıcılar ve yurt dışına aktarım',
     `Supabase: veritabanı, kimlik doğrulama, fotoğraf depolama ve anlık iletişim altyapısı. Sunucu bölgesi: ${CONFIG.region.tr}.`,
     'Expo (650 Industries, ABD): bildirimlerin cihazına iletilmesi.',
     'OpenAI (ABD): profil fotoğraflarının otomatik kontrolü. Yüklediğin fotoğraf yalnızca bu kontrol için gönderilir. OpenAI, API üzerinden gelen verileri model eğitiminde kullanmaz; kötüye kullanımı izlemek için en fazla 30 gün saklayabilir.',
-    'Apple: bildirimlerin iOS cihazına ulaştırılması ve konumdan şehir adının bulunması.',
+    'Apple: Apple ile giriş, bildirimlerin iOS cihazına ulaştırılması ve konumdan şehir adının bulunması.',
+    'Google (ABD): Google ile giriş. Google, giriş yaptığın hesabın e-posta adresini, adını ve kimliğini bize iletir.',
     'TMDB (The Movie Database): film bilgileri ve görselleri. Cihazın bu bilgileri doğrudan TMDB’den ister; TMDB bu sırada IP adresini ve film aramalarını görebilir.',
     'YouTube: bir fragmanı açtığında fragman YouTube’da açılır ve YouTube’un kendi gizlilik kuralları geçerli olur.',
   ]))}
@@ -204,7 +205,7 @@ ${section('1. Controller',
 
 ${section('2. What we collect',
   list([
-    'Account: your email address and password (stored hashed by our authentication provider; we cannot see it). Continuing as a guest creates only an account identifier.',
+    'Account: if you sign in with Apple or Google, the email address that account shares with us (Apple’s relay address if you choose “Hide My Email”), your name and an identifier for that account; your password never reaches us. For accounts made with an email and password, your email address and password (stored hashed by our authentication provider; we cannot see it). With Sign in with Apple we keep a token Apple issues, so that the link with Apple can be revoked when you delete your account. Continuing as a guest creates only an account identifier.',
     'Profile: display name, profile photo, date of birth, height, smoking and drinking habits, a quote from a favourite film, your gender and matching preferences (genders you are interested in and an age range).',
     'Film taste: your first-run survey answers, the films you swipe (liked or passed), your watchlist and ratings, and the film lists you create (their names and the films in them).',
     'Location: if you allow it, your device’s precise location and the city derived from it.',
@@ -238,7 +239,8 @@ ${section('5. Service providers and international transfers',
     `Supabase: database, authentication, photo storage and realtime infrastructure. Server region: ${CONFIG.region.en}.`,
     'Expo (650 Industries, USA): delivering push notifications.',
     'OpenAI (USA): the automatic check of profile photos. A photo you upload is sent only for that check. OpenAI does not use data sent through its API to train models, and may keep it for up to 30 days to monitor abuse.',
-    'Apple: delivering notifications to iOS devices and looking up a city name from a location.',
+    'Apple: Sign in with Apple, delivering notifications to iOS devices and looking up a city name from a location.',
+    'Google (USA): Sign in with Google. Google shares the email address, name and identifier of the account you sign in with.',
     'TMDB (The Movie Database): film information and images, requested directly from your device; TMDB can see your IP address and film searches.',
     'YouTube: trailers open on YouTube, where YouTube’s own privacy policy applies.',
   ]))}
