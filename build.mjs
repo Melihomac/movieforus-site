@@ -22,6 +22,8 @@ const CONFIG = {
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
   // Effective date of the privacy policy.
   effective: '2026-09-16',
+  // The app's page on the App Store.
+  appStore: 'https://apps.apple.com/tr/app/movieforus/id6811587180',
 };
 
 const app = path.join(process.env.HOME, 'Developer/MovieForUs');
@@ -94,6 +96,16 @@ page({
   <h1>${wordmark}</h1>
   <p class="lead">Film zevkin tutan biriyle tanış.</p>
   <p>Film kaydır, beğendiklerin ve geçtiklerin üzerinden zevkin ortaya çıksın. Aynı filmlerde seninle anlaşan, 100 km içindeki kişilerle eşleş; sohbet et, ardından birlikte izleyeceğiniz filmi birlikte seçin.</p>
+  <p class="store">
+    <!-- Apple's own badge, unmodified and at its own proportions, as its
+         marketing guidelines require. The black badge carries its own
+         background, so it reads on the dark page and on the light one. Served from this site so the page does not
+         call out to Apple for it. -->
+    <a class="store-badge" href="${CONFIG.appStore}">
+      <img src="app-store-badge-tr.svg" alt="App Store’dan İndirin" width="151" height="40">
+    </a>
+  </p>
+  <p class="muted">iPhone için ücretsiz. 18 yaş ve üzeri.</p>
 </section>
 <section class="cards">
   <div class="card"><h3>Film kaydır</h3><p>Herkesin gördüğü ortak filmler ve sana özel öneriler. Günde 30 kart.</p></div>
@@ -101,7 +113,7 @@ page({
   <div class="card"><h3>Birlikte seç</h3><p>Eşleştiğin kişiyle aynı filmleri kaydırın, ikinizin de beğendiği film ortaya çıksın.</p></div>
 </section>
 <section class="links">
-  <a href="gizlilik.html">Gizlilik Politikası</a> · <a href="privacy.html">Privacy Policy</a> · <a href="sartlar.html">Kullanım Şartları</a> · <a href="destek.html">Destek</a>
+  <a href="${CONFIG.appStore}">App Store</a> · <a href="gizlilik.html">Gizlilik Politikası</a> · <a href="privacy.html">Privacy Policy</a> · <a href="sartlar.html">Kullanım Şartları</a> · <a href="destek.html">Destek</a>
 </section>`,
 });
 
@@ -356,6 +368,11 @@ mark { background: #ffd60a; color: #000; padding: 0 4px; border-radius: 4px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 36px 0; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
 .card p { margin: 0; color: var(--muted); font-size: 15px; }
+.store { margin: 28px 0 8px; }
+/* Apple asks for clear space around the badge and a minimum height. */
+.store-badge { display: inline-block; padding: 6px; }
+.store-badge:hover { opacity: .85; }
+.store-badge img { height: 52px; width: auto; display: block; }
 .links { margin-top: 24px; }
 footer { max-width: 820px; margin: 0 auto; padding: 24px; border-top: 1px solid var(--border); }
 footer p { color: var(--muted); margin: 6px 0; }
