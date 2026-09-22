@@ -21,7 +21,7 @@ const CONFIG = {
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
   // Effective date of the privacy policy.
-  effective: '2026-09-16',
+  effective: '2026-09-22',
   // The app's page on the App Store.
   appStore: 'https://apps.apple.com/tr/app/movieforus/id6811587180',
 };
@@ -137,7 +137,7 @@ ${section('2. Hangi verileri işliyoruz',
   list([
     'Hesap bilgileri: Apple ya da Google ile giriş yaparsan o hesabın bize ilettiği e-posta adresin (Apple’da “E-postamı gizle”yi seçersen Apple’ın yönlendirme adresi), adın ve hesabına özel bir kimlik; şifren bize hiç gelmez. E-posta ve şifreyle açılmış hesaplarda e-posta adresin ve şifren (şifren kimlik doğrulama sağlayıcımızda şifrelenmiş olarak saklanır; biz göremeyiz). Apple ile girişte, hesabını sildiğinde Apple’daki bağlantıyı iptal edebilmek için Apple’ın verdiği bir erişim anahtarını saklarız. Misafir olarak devam edersen yalnızca bir hesap kimliği oluşturulur.',
     'Profil bilgileri: görünen adın, profil fotoğrafın, doğum tarihin, boyun, sigara ve alkol kullanımın, favori bir filmden alıntın, cinsiyetin ve eşleşme tercihlerin (ilgilendiğin cinsiyetler ve yaş aralığı).',
-    'Film zevkin: ilk açılış anketindeki cevapların, kaydırdığın filmler (beğendin ya da geçtin), izleme listen, verdiğin puanlar ve oluşturduğun film listeleri (adları ve içindeki filmler).',
+    'Film zevkin: ilk açılış anketindeki cevapların, kaydırdığın filmler (beğendin ya da geçtin), kalple beğendiğin filmler, izleme listen, verdiğin puanlar ve oluşturduğun film listeleri (adları ve içindeki filmler).',
     'Konum: izin verirsen cihazının hassas konumu ve bu konumdan bulunan şehir adı.',
     'Eşleşmeler ve mesajlar: kimlerle eşleştiğin, eşleşmelerinin durumu, gönderdiğin ve aldığın mesajlar, ortak odalar ve odalarda kaydırdığın filmler.',
     'Güvenlik kayıtları: yaptığın ve hakkında yapılan şikayetler, engellediğin kişiler, kullanım şartlarını kabul kayıtların ve profil fotoğraflarının otomatik kontrol sonuçları.',
@@ -158,7 +158,9 @@ ${section('3. Verilerini neden işliyoruz',
 ${section('4. Bilgilerini kimler görebilir',
   list([
     'Eşleştiğin kişiler: görünen adın, fotoğrafın, yaşın, boyun, sigara ve alkol bilgin, film alıntın, cinsiyetin, aranızdaki yuvarlanmış yaklaşık mesafe, ortak beğendiğiniz filmler ve uyum oranınız. Doğum tarihin ve tam konumun kimseye gösterilmez.',
-    'Aynı odadaki kişiler: görünen adın ve emojin. Fotoğrafın yalnızca eşleştiğin kişilere gösterilir. Bir eşleşmeyi geçer ya da kişiyi engellersen fotoğrafına erişimi kapanır.',
+    'Aynı odadaki kişiler: görünen adın, emojin ve profil fotoğrafın. Bir odaya ancak kodunu paylaştığın kişiler girebilir; eşleşmeden açılan odalar yalnızca o iki kişiye açıktır.',
+    'Bir filmin sayfasını açan, eşleşebileceğin kişiler: o filmi kalple beğendiysen fotoğrafın orada bulanıklaştırılmış olarak, en fazla iki kişilik küçük bir daire ve bir sayı içinde görünebilir. Adın, yaşın, mesafen ya da başka hangi filmleri beğendiğin gösterilmez ve yalnızca senin eşleşme filtrenden (yaş aralığı, cinsiyet tercihi, 100 km) karşılıklı olarak geçen kişiler bunu görebilir. Bunu istemiyorsan uygulamada Profil → Ayarlar → Gizlilik bölümündeki “Film sayfalarında fotoğrafım” anahtarını kapatabilirsin; kapattığında fotoğrafın yine yalnızca eşleştiğin kişilere ve aynı odadakilere gösterilir, eşleşme özelliğin bundan etkilenmez.',
+    'Bir eşleşmeyi geçer ya da kişiyi engellersen fotoğrafına erişimi kapanır.',
     'Moderatörler: yalnızca incelenen bir şikayetle ya da fotoğraf kontrolüne yapılan bir itirazla ilgili bilgiler.',
     'Yetkili kamu kurumları: yalnızca yasal bir zorunluluk olduğunda.',
   ]))}
@@ -240,7 +242,9 @@ ${section('3. Why we process it',
 ${section('4. Who can see your information',
   list([
     'People you match with: your display name, photo, age, height, smoking and drinking habits, film quote, gender, a rounded approximate distance between you, films you both liked and your compatibility score. Your date of birth and exact location are never shown.',
-    'People in the same room: your display name and emoji. Your photo is shown only to people you are matched with, and access ends if the match is passed or blocked.',
+    'People in the same room: your display name, emoji and profile photo. A room can only be entered by someone you send the code to; a room opened from a match belongs to those two people alone.',
+    'People who could match with you and open a film\u2019s page: if you have hearted that film, your photo can appear there blurred, inside a small circle among at most two, next to a count. Your name, age, distance and the other films you like are not shown, and only people who pass your matching filters (age range, gender preference, 100 km) mutually can see it. You can turn this off in the app under Profile \u2192 Settings \u2192 Privacy, \u201cMy photo on film pages\u201d; with it off your photo is again shown only to your matches and the people in your rooms, and your matching is unaffected.',
+    'If you pass a match or block someone, their access to your photo ends.',
     'Moderators: only what relates to a report under review or to a contested photo check.',
     'Public authorities: only where the law requires it.',
   ]))}
