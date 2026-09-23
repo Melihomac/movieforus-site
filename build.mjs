@@ -1,10 +1,12 @@
-// Builds the MovieForUs website: a landing page, the privacy policy (Turkish
-// and English), the terms of use and a support page.
+// Builds the MovieForUs website, in Turkish and in English: a landing page,
+// the privacy policy, the terms of use and a support page, twice over, with a
+// link between each page and its twin.
 //
 //   node --experimental-strip-types build.mjs
 //
-// The terms page is generated from the app's own src/constants/legal.ts, so
-// the text people accept in the app and the text published here cannot drift.
+// The terms pages are generated from the app's own dictionaries (src/i18n),
+// so the text people accept in the app and the text published here cannot
+// drift -- in either language.
 //
 // Everything that has to be filled in by a person lives in CONFIG. A value
 // still in square brackets is shown highlighted on the page and makes this
@@ -27,7 +29,14 @@ const CONFIG = {
 };
 
 const app = path.join(process.env.HOME, 'Developer/MovieForUs');
-const { TermsSections, TermsVersion } = await import(path.join(app, 'src/constants/legal.ts'));
+const { tr } = await import(path.join(app, 'src/i18n/tr.ts'));
+const { en } = await import(path.join(app, 'src/i18n/en.ts'));
+// Read rather than imported: legal.ts imports through the app's '@/' alias,
+// which node does not resolve, and the version is one line of it.
+const TermsVersion = fs
+  .readFileSync(path.join(app, 'src/constants/legal.ts'), 'utf8')
+  .match(/TermsVersion = '([^']+)'/)[1];
+const terms = { tr: tr.terms.sections, en: en.terms.sections };
 
 /* ------------------------------------------------------------------ */
 /* helpers                                                             */
@@ -47,11 +56,32 @@ const dateEN = (iso) =>
 
 const wordmark = '<span class="wordmark">Movie<span class="for">For</span>Us</span>';
 
+/**
+ * Every page and its twin in the other language. The switch in the header
+ * lands on the same page rather than the front door, which is the difference
+ * between changing language and losing your place.
+ */
+const twin = {
+  'index.html': 'en.html',
+  'en.html': 'index.html',
+  'gizlilik.html': 'privacy.html',
+  'privacy.html': 'gizlilik.html',
+  'sartlar.html': 'terms.html',
+  'terms.html': 'sartlar.html',
+  'destek.html': 'support.html',
+  'support.html': 'destek.html',
+};
+
 function page({ file, lang = 'tr', title, description, body }) {
-  const nav =
+  const links =
     lang === 'tr'
       ? `<a href="./">Ana sayfa</a><a href="gizlilik.html">Gizlilik</a><a href="sartlar.html">Şartlar</a><a href="destek.html">Destek</a>`
-      : `<a href="./">Home</a><a href="privacy.html">Privacy</a><a href="destek.html">Support</a>`;
+      : `<a href="en.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="support.html">Support</a>`;
+  // Labelled in the language it leads to, as language switches are.
+  const other = `<a class="lang" href="${twin[file]}" hreflang="${lang === 'tr' ? 'en' : 'tr'}">${
+    lang === 'tr' ? 'English' : 'Türkçe'
+  }</a>`;
+  const nav = links + other;
   const html = `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -59,6 +89,8 @@ function page({ file, lang = 'tr', title, description, body }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escape(title)}</title>
 <meta name="description" content="${escape(description)}">
+<link rel="alternate" hreflang="${lang === 'tr' ? 'en' : 'tr'}" href="${twin[file]}">
+<link rel="alternate" hreflang="${lang}" href="${file}">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -113,7 +145,38 @@ page({
   <div class="card"><h3>Birlikte seç</h3><p>Eşleştiğin kişiyle aynı filmleri kaydırın, ikinizin de beğendiği film ortaya çıksın.</p></div>
 </section>
 <section class="links">
-  <a href="${CONFIG.appStore}">App Store</a> · <a href="gizlilik.html">Gizlilik Politikası</a> · <a href="privacy.html">Privacy Policy</a> · <a href="sartlar.html">Kullanım Şartları</a> · <a href="destek.html">Destek</a>
+  <a href="${CONFIG.appStore}">App Store</a> · <a href="gizlilik.html">Gizlilik Politikası</a> · <a href="sartlar.html">Kullanım Şartları</a> · <a href="destek.html">Destek</a> · <a href="en.html">English</a>
+</section>`,
+});
+
+/* ------------------------------------------------------------------ */
+/* landing page — English                                              */
+/* ------------------------------------------------------------------ */
+
+page({
+  file: 'en.html',
+  lang: 'en',
+  title: 'MovieForUs — Meet someone with your taste in films',
+  description: 'MovieForUs is a dating app that matches people on their taste in films.',
+  body: `
+<section class="hero">
+  <h1>${wordmark}</h1>
+  <p class="lead">Meet someone with your taste in films.</p>
+  <p>Swipe through films and let your taste show in what you keep and what you pass on. Match with people within 100 km who agree with you on the same films; talk, then pick what to watch together, together.</p>
+  <p class="store">
+    <a class="store-badge" href="${CONFIG.appStore}">
+      <img src="app-store-badge-tr.svg" alt="Download on the App Store" width="151" height="40">
+    </a>
+  </p>
+  <p class="muted">Free for iPhone. 18 and over.</p>
+</section>
+<section class="cards">
+  <div class="card"><h3>Swipe films</h3><p>Films everybody sees, and recommendations made for you. 30 cards a day.</p></div>
+  <div class="card"><h3>Match</h3><p>People who agreed with you on at least 8 of the same films — or liked 5 of the same ones.</p></div>
+  <div class="card"><h3>Choose together</h3><p>Swipe the same films with the person you matched with, and the one you both like surfaces.</p></div>
+</section>
+<section class="links">
+  <a href="${CONFIG.appStore}">App Store</a> · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a> · <a href="support.html">Support</a> · <a href="./">Türkçe</a>
 </section>`,
 });
 
@@ -288,19 +351,47 @@ ${section('10. Changes',
 /* terms of use — from the app's own text                              */
 /* ------------------------------------------------------------------ */
 
+/** The app's own sections, laid out as a page: bullets become a list. */
+const termsBody = (sections) =>
+  sections
+    .map((s) => {
+      const bullets = s.body.filter((line) => line.startsWith('•'));
+      const plain = s.body.filter((line) => !line.startsWith('•'));
+      return section(
+        s.title,
+        ...plain.map(p),
+        bullets.length ? list(bullets.map((b) => b.replace(/^•\s*/, ''))) : ''
+      );
+    })
+    .join('\n');
+
 page({
   file: 'sartlar.html',
   title: 'Kullanım Şartları — MovieForUs',
   description: 'MovieForUs kullanım şartları.',
   body: `
 <h1>Kullanım Şartları</h1>
-<p class="muted">Son güncelleme: ${dateTR(TermsVersion)}</p>
-${TermsSections.map((s) => {
-    const bullets = s.body.filter((line) => line.startsWith('•'));
-    const plain = s.body.filter((line) => !line.startsWith('•'));
-    return section(s.title, ...plain.map(p), bullets.length ? list(bullets.map((b) => b.replace(/^•\s*/, ''))) : '');
-  }).join('\n')}
+<p class="muted">Son güncelleme: ${dateTR(TermsVersion)} · <a href="terms.html">English</a></p>
+${termsBody(terms.tr)}
 ${section('İletişim', p(`Soruların ve şikayetlerin için bize ${CONFIG.email} adresinden ulaşabilirsin.`))}
+`,
+});
+
+/* ------------------------------------------------------------------ */
+/* terms of use — English                                              */
+/* ------------------------------------------------------------------ */
+
+page({
+  file: 'terms.html',
+  lang: 'en',
+  title: 'Terms of Use — MovieForUs',
+  description: 'The MovieForUs terms of use.',
+  body: `
+<h1>Terms of Use</h1>
+<p class="muted">Last updated: ${dateEN(TermsVersion)} · <a href="sartlar.html">Türkçe</a></p>
+<p class="muted">A translation of the Turkish terms, which are the ones accepted in the app and the authoritative version for users in Türkiye.</p>
+${termsBody(terms.en)}
+${section('Contact', p(`For questions and complaints you can reach us at ${CONFIG.email}.`))}
 `,
 });
 
@@ -315,7 +406,7 @@ page({
   body: `
 <h1>Destek</h1>
 <p>Bir sorun mu yaşıyorsun ya da bir sorun mu var? Bize <strong>${fill(CONFIG.email)}</strong> adresinden yaz; en kısa sürede dönüş yaparız.</p>
-<p class="muted">Need help? Write to us at ${fill(CONFIG.email)}.</p>
+<p class="muted"><a href="support.html">English</a></p>
 
 ${section('Birini nasıl şikayet ederim?',
   p('Eşleşme ekranında sağ üstteki ⋯ menüsünden “Şikayet et”i seç. Bir mesajı şikayet etmek için mesaja uzun bas. Şikayetin gizli tutulur ve moderatörlerimize anında iletilir.'))}
@@ -331,6 +422,37 @@ ${section('Neden kimseyle eşleşemiyorum?',
 
 ${section('Acil bir durum mu var?',
   p('Kendini tehlikede hissediyorsan lütfen hemen 112’yi ara.'))}
+`,
+});
+
+/* ------------------------------------------------------------------ */
+/* support — English                                                   */
+/* ------------------------------------------------------------------ */
+
+page({
+  file: 'support.html',
+  lang: 'en',
+  title: 'Support — MovieForUs',
+  description: 'MovieForUs support and contact.',
+  body: `
+<h1>Support</h1>
+<p>Stuck, or something wrong? Write to us at <strong>${fill(CONFIG.email)}</strong> and we will get back to you as soon as we can.</p>
+<p class="muted"><a href="destek.html">Türkçe</a></p>
+
+${section('How do I report someone?',
+  p('On the match screen, open the ⋯ menu at the top right and choose “Report”. To report a message, press and hold it. Your report is confidential and reaches our moderators straight away.'))}
+
+${section('How do I block someone?',
+  p('On the match screen, open the ⋯ menu and choose “Block”. Somebody you block can no longer match with you or write to you.'))}
+
+${section('How do I delete my account?',
+  p('Use “Delete my account” under Profile → Account. Your profile, your photos, your matches and your messages are deleted immediately and permanently.'))}
+
+${section('Why am I not matching with anyone?',
+  p('Matching needs a finished profile, location permission, and either agreement with somebody on at least 8 of the same films or 5 of the same films liked. You can swipe 30 films a day; films in common build up over a few days.'))}
+
+${section('Is this an emergency?',
+  p('If you feel you are in danger, call your local emergency number straight away.'))}
 `,
 });
 
@@ -355,6 +477,9 @@ a:hover { text-decoration: underline; }
   max-width: 820px; margin: 0 auto; padding: 20px 24px; }
 .top nav { display: flex; gap: 18px; font-size: 15px; }
 .top nav a { color: var(--muted); }
+/* The language switch reads as a control rather than another page. */
+.top nav a.lang { color: var(--text); border: 1px solid var(--border); border-radius: 999px;
+  padding: 2px 10px; font-size: 14px; }
 .brand { color: var(--text); font-size: 20px; }
 .wordmark { font-weight: 800; letter-spacing: -0.02em; }
 .for { color: var(--primary); }
@@ -387,7 +512,9 @@ footer p { color: var(--muted); margin: 6px 0; }
 /* ------------------------------------------------------------------ */
 
 const unfilled = Object.entries(CONFIG).filter(([, value]) => typeof value === 'string' && /^\[.*\]$/.test(value));
-console.log('pages: index.html, gizlilik.html, privacy.html, sartlar.html, destek.html');
+console.log(
+  'pages: index.html, gizlilik.html, sartlar.html, destek.html · en.html, privacy.html, terms.html, support.html'
+);
 if (unfilled.length) {
   console.log(`NOT READY TO PUBLISH — fill in: ${unfilled.map(([key]) => key).join(', ')}`);
 }
