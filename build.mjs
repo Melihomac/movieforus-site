@@ -27,7 +27,7 @@ const CONFIG = {
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
   // Effective date of the privacy policy.
-  effective: '2026-09-22',
+  effective: '2026-09-28',
   // The app's page on the App Store.
   appStore: 'https://apps.apple.com/tr/app/movieforus/id6811587180',
 };
@@ -209,9 +209,10 @@ ${section('2. Hangi verileri işliyoruz',
     'Eşleşmeler ve mesajlar: kimlerle eşleştiğin, eşleşmelerinin durumu, gönderdiğin ve aldığın mesajlar, ortak odalar ve odalarda kaydırdığın filmler.',
     'Güvenlik kayıtları: yaptığın ve hakkında yapılan şikayetler, engellediğin kişiler, kullanım şartlarını kabul kayıtların ve profil fotoğraflarının otomatik kontrol sonuçları.',
     'Cihaz bilgisi: bildirim gönderebilmek için cihazına özel bildirim anahtarı.',
+    'Kullanım verileri: uygulama içinde yaptıkların; açtığın ekranlar, açtığın, beğendiğin, puanladığın, listelere eklediğin ve kaydırdığın filmler ve bir filmi hangi bölümden açtığın, eşleşmelerin ve eşleşme işlemlerin, mesaj gönderdiğin (mesajın içeriği değil), ortak odaları kullanman, bir aramanın kaç sonuç bulduğu (aradığın kelimeler değil) ve ayar değişikliklerin. Bunlarla birlikte uygulama sürümü, cihaz modeli, işletim sistemi sürümü, uygulama dili, rastgele üretilmiş bir cihaz numarası ve hesap kimliğin.',
     'Teknik kayıtlar: sunucularımıza bağlandığında IP adresin ve istek bilgileri, servis sağlayıcılarımızın kayıtlarında tutulabilir.',
   ]),
-  p('Reklam göstermiyoruz, analitik ya da izleme araçları kullanmıyoruz ve kişisel verilerini satmıyoruz.'))}
+  p('Reklam göstermiyoruz, seni başka uygulama ve siteler arasında izlemiyoruz, reklam kimliğini kullanmıyoruz ve kişisel verilerini satmıyoruz. Uygulamayı geliştirmek için yalnızca aşağıda açıklanan kullanım analizini yapıyoruz.'))}
 
 ${section('3. Verilerini neden işliyoruz',
   list([
@@ -219,6 +220,7 @@ ${section('3. Verilerini neden işliyoruz',
     'Konuma dayalı eşleşme (açık rıza): yalnızca 100 km içindeki kişilerle eşleşebilmen için mesafe hesaplamak. Konum iznini cihaz ayarlarından istediğin zaman geri alabilirsin; bu durumda eşleşme özelliği çalışmaz.',
     'Özel nitelikli veriler (açık rıza): cinsiyetin ve ilgilendiğin cinsiyetler, cinsel hayatına ilişkin bilgi ortaya koyabilir. Bu bilgileri yalnızca eşleşme önerisi için ve açık rızanla işleriz.',
     'Bildirimler (açık rıza): yeni eşleşme ve mesajları haber vermek. Bildirim iznini cihaz ayarlarından kapatabilirsin.',
+    'Uygulamayı geliştirmek (açık rıza; Kullanım Şartları’nı kabul ederken verilir): hangi özelliklerin ne kadar kullanıldığını, kişilerin nerede zorlandığını ve hangi değişikliklerin işe yaradığını anlamak için kullanım verilerini analiz etmek. Bu analiz, şartlar kabul edilmeden başlamaz; kabulden önce uygulamada yaptıkların (örneğin kayıt olman) cihazında bekletilir ve yalnızca kabul edersen gönderilir.',
     'Topluluğun güvenliği (meşru menfaat ve hukuki yükümlülük): profil fotoğraflarını başkalarına gösterilmeden önce otomatik olarak kontrol etmek, şikayetleri incelemek, kurallara aykırı içeriği kaldırmak, kötüye kullanımı önlemek ve yasal taleplere yanıt vermek. Otomatik kontrol, fotoğrafında çıplaklık, cinsel içerik, şiddet ya da kendine zarar verme olup olmadığına bakar; uygun bulunmayan fotoğraf silinir ve profilinde kullanılamaz. Bu karara itiraz etmek için bize yazabilirsin; itirazları bir kişi inceler.',
   ]))}
 
@@ -238,6 +240,7 @@ ${section('5. Hizmet sağlayıcılar ve yurt dışına aktarım',
     `Supabase: veritabanı, kimlik doğrulama, fotoğraf depolama ve anlık iletişim altyapısı. Sunucu bölgesi: ${CONFIG.region.tr}.`,
     'Expo (650 Industries, ABD): bildirimlerin cihazına iletilmesi.',
     'OpenAI (ABD): profil fotoğraflarının otomatik kontrolü. Yüklediğin fotoğraf yalnızca bu kontrol için gönderilir. OpenAI, API üzerinden gelen verileri model eğitiminde kullanmaz; kötüye kullanımı izlemek için en fazla 30 gün saklayabilir.',
+    'Amplitude (Amplitude, Inc., ABD; veriler Avrupa Birliği’ndeki sunucularında tutulur): kullanım analizi. Bu hizmete adın, e-posta adresin, fotoğrafların, mesajlarının içeriği, arama metinlerin, konumun, IP adresin, cinsiyetin ve eşleşme tercihlerin gönderilmez; yalnızca hesap kimliğinle tanınırsın.',
     'Apple: Apple ile giriş, bildirimlerin iOS cihazına ulaştırılması ve konumdan şehir adının bulunması.',
     'Google (ABD): Google ile giriş. Google, giriş yaptığın hesabın e-posta adresini, adını ve kimliğini bize iletir.',
     'TMDB (The Movie Database): film bilgileri ve görselleri. Cihazın bu bilgileri doğrudan TMDB’den ister; TMDB bu sırada IP adresini ve film aramalarını görebilir.',
@@ -248,6 +251,7 @@ ${section('6. Ne kadar süre saklıyoruz',
   list([
     'Hesabın açık olduğu sürece verilerini saklarız.',
     'Hesabını uygulama içinden (Profil → Hesap → Hesabımı sil) sildiğinde profilin, fotoğrafların ve kontrol kayıtları, film zevkin, izleme listen, film listelerin, kaydırmaların, eşleşmelerin, mesajların ve bildirim anahtarın hemen ve kalıcı olarak silinir.',
+    `Kullanım analizi kayıtları Amplitude’da tutulur ve hesabını sildiğinde kendiliğinden silinmez. Silinmelerini istersen hesabını sildikten sonra ${CONFIG.email} adresine yaz; en geç 30 gün içinde sileriz.`,
     'Topluluğun güvenliği için, bir kişi hakkında yapılan şikayet kayıtları o kişinin hesabı silindikten sonra en fazla 2 yıl saklanabilir.',
     'Servis sağlayıcılarımızın yedeklerinde ve teknik kayıtlarında kalan kopyalar, onların saklama döngüsü sonunda silinir.',
   ]))}
@@ -293,9 +297,10 @@ ${section('2. What we collect',
     'Matches and messages: who you matched with, the state of each match, messages you send and receive, shared rooms and the films swiped in them.',
     'Safety records: reports you file and reports about you, people you block, your acceptances of the terms of use, and the results of the automatic checks on your profile photos.',
     'Device: a push notification token for your device.',
+    'Usage data: what you do in the app: the screens you open; the films you open, heart, rate, add to lists and swipe, and which section you opened a film from; your matches and what you do with them; that you sent a message (not what it said); your use of shared rooms; how many results a search found (not what you searched for); and changes to your settings. Along with these, the app version, device model, operating system version, app language, a randomly generated device number and your account identifier.',
     'Technical logs: your IP address and request details may be recorded in our service providers’ logs when you connect.',
   ]),
-  p('We show no ads, use no analytics or tracking tools, and do not sell personal data.'))}
+  p('We show no ads, do not track you across other apps and websites, do not use your advertising identifier, and do not sell personal data. The only analysis we do is the usage analytics described below, to improve the app.'))}
 
 ${section('3. Why we process it',
   list([
@@ -303,6 +308,7 @@ ${section('3. Why we process it',
     'Location-based matching (consent): to calculate distance so that you are matched only with people within 100 km. You can withdraw location permission in your device settings at any time; matching then stops working.',
     'Special category data (explicit consent): your gender and the genders you are interested in may reveal information about your sex life or orientation. We use them only to suggest matches.',
     'Notifications (consent): to tell you about new matches and messages. You can turn them off in your device settings.',
+    'Improving the app (consent, given when you accept the Terms of Use): analysing usage data to understand which features are used and how much, where people struggle and which changes work. The analysis does not start before the terms are accepted; what you do before that (signing up, for instance) is held on your device and sent only if you accept.',
     'Community safety (legitimate interest and legal obligation): checking profile photos automatically before anyone else can see them, reviewing reports, removing content that breaks the rules, preventing abuse and responding to lawful requests. The automatic check looks for nudity, sexual content, violence and self-harm; a photo that fails it is deleted and cannot be used on your profile. You can contest the decision by writing to us, and a person will review it.',
   ]))}
 
@@ -322,6 +328,7 @@ ${section('5. Service providers and international transfers',
     `Supabase: database, authentication, photo storage and realtime infrastructure. Server region: ${CONFIG.region.en}.`,
     'Expo (650 Industries, USA): delivering push notifications.',
     'OpenAI (USA): the automatic check of profile photos. A photo you upload is sent only for that check. OpenAI does not use data sent through its API to train models, and may keep it for up to 30 days to monitor abuse.',
+    'Amplitude (Amplitude, Inc., USA; the data is kept on its servers in the European Union): usage analytics. Your name, email address, photos, message content, search text, location, IP address, gender and matching preferences are not sent to it; it knows you only by your account identifier.',
     'Apple: Sign in with Apple, delivering notifications to iOS devices and looking up a city name from a location.',
     'Google (USA): Sign in with Google. Google shares the email address, name and identifier of the account you sign in with.',
     'TMDB (The Movie Database): film information and images, requested directly from your device; TMDB can see your IP address and film searches.',
@@ -332,6 +339,7 @@ ${section('6. How long we keep it',
   list([
     'We keep your data for as long as your account exists.',
     'When you delete your account in the app (Profile → Account → Delete my account), your profile, photos and their check records, film taste, watchlist, film lists, swipes, matches, messages and push token are deleted immediately and permanently.',
+    `Usage analytics records are kept at Amplitude and are not removed automatically when you delete your account. If you want them deleted, write to ${CONFIG.email} after deleting your account and we will delete them within 30 days.`,
     'For community safety, reports about a person may be kept for up to 2 years after that person’s account is deleted.',
     'Copies in our providers’ backups and technical logs are removed at the end of their retention cycles.',
   ]))}
