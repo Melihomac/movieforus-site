@@ -220,7 +220,7 @@ ${section('3. Verilerini neden işliyoruz',
     'Konuma dayalı eşleşme (açık rıza): yalnızca 100 km içindeki kişilerle eşleşebilmen için mesafe hesaplamak. Konum iznini cihaz ayarlarından istediğin zaman geri alabilirsin; bu durumda eşleşme özelliği çalışmaz.',
     'Özel nitelikli veriler (açık rıza): cinsiyetin ve ilgilendiğin cinsiyetler, cinsel hayatına ilişkin bilgi ortaya koyabilir. Bu bilgileri yalnızca eşleşme önerisi için ve açık rızanla işleriz.',
     'Bildirimler (açık rıza): yeni eşleşme ve mesajları haber vermek. Bildirim iznini cihaz ayarlarından kapatabilirsin.',
-    'Uygulamayı geliştirmek (açık rıza; Kullanım Şartları’nı kabul ederken verilir): hangi özelliklerin ne kadar kullanıldığını, kişilerin nerede zorlandığını ve hangi değişikliklerin işe yaradığını anlamak için kullanım verilerini analiz etmek. Bu analiz, şartlar kabul edilmeden başlamaz; kabulden önce uygulamada yaptıkların (örneğin kayıt olman) cihazında bekletilir ve yalnızca kabul edersen gönderilir.',
+    'Uygulamayı geliştirmek (KVKK md. 5/2-f, meşru menfaat): hangi özelliklerin ne kadar kullanıldığını, kişilerin nerede zorlandığını ve hangi değişikliklerin işe yaradığını anlamak için kullanım verilerini analiz etmek. Bu analiz, Kullanım Şartları’nda anlatıldığı için şartları kabul etmeden başlamaz; kabulden önce yaptıkların (örneğin kayıt olman) cihazında bekletilir. Uygulamayı kullanmak için bu analize izin vermen gerekmez: Profil → Ayarlar → Gizlilik bölümündeki “Kullanım verilerini paylaş” anahtarını kapattığında o cihazdan bir daha kullanım verisi gönderilmez.',
     'Topluluğun güvenliği (meşru menfaat ve hukuki yükümlülük): profil fotoğraflarını başkalarına gösterilmeden önce otomatik olarak kontrol etmek, şikayetleri incelemek, kurallara aykırı içeriği kaldırmak, kötüye kullanımı önlemek ve yasal taleplere yanıt vermek. Otomatik kontrol, fotoğrafında çıplaklık, cinsel içerik, şiddet ya da kendine zarar verme olup olmadığına bakar; uygun bulunmayan fotoğraf silinir ve profilinde kullanılamaz. Bu karara itiraz etmek için bize yazabilirsin; itirazları bir kişi inceler.',
   ]))}
 
@@ -251,7 +251,7 @@ ${section('6. Ne kadar süre saklıyoruz',
   list([
     'Hesabın açık olduğu sürece verilerini saklarız.',
     'Hesabını uygulama içinden (Profil → Hesap → Hesabımı sil) sildiğinde profilin, fotoğrafların ve kontrol kayıtları, film zevkin, izleme listen, film listelerin, kaydırmaların, eşleşmelerin, mesajların ve bildirim anahtarın hemen ve kalıcı olarak silinir.',
-    `Kullanım analizi kayıtları Amplitude’da tutulur ve hesabını sildiğinde kendiliğinden silinmez. Silinmelerini istersen hesabını sildikten sonra ${CONFIG.email} adresine yaz; en geç 30 gün içinde sileriz.`,
+    `Kullanım analizi kayıtları Amplitude’da tutulur. Hesabını sildiğinde bu kayıtların silinmesi Amplitude’dan otomatik olarak istenir ve Amplitude silmeyi en geç 30 gün içinde tamamlar. Bir sorun olursa ${CONFIG.email} adresine yazabilirsin.`,
     'Topluluğun güvenliği için, bir kişi hakkında yapılan şikayet kayıtları o kişinin hesabı silindikten sonra en fazla 2 yıl saklanabilir.',
     'Servis sağlayıcılarımızın yedeklerinde ve teknik kayıtlarında kalan kopyalar, onların saklama döngüsü sonunda silinir.',
   ]))}
@@ -308,7 +308,7 @@ ${section('3. Why we process it',
     'Location-based matching (consent): to calculate distance so that you are matched only with people within 100 km. You can withdraw location permission in your device settings at any time; matching then stops working.',
     'Special category data (explicit consent): your gender and the genders you are interested in may reveal information about your sex life or orientation. We use them only to suggest matches.',
     'Notifications (consent): to tell you about new matches and messages. You can turn them off in your device settings.',
-    'Improving the app (consent, given when you accept the Terms of Use): analysing usage data to understand which features are used and how much, where people struggle and which changes work. The analysis does not start before the terms are accepted; what you do before that (signing up, for instance) is held on your device and sent only if you accept.',
+    'Improving the app (legitimate interest): analysing usage data to understand which features are used and how much, where people struggle and which changes work. Because the Terms of Use describe it, it does not start before you accept them; what you do before that (signing up, for instance) is held on your device. You do not have to allow it to use the app: turn off “Share usage data” under Profile → Settings → Privacy and no more usage data is sent from that device.',
     'Community safety (legitimate interest and legal obligation): checking profile photos automatically before anyone else can see them, reviewing reports, removing content that breaks the rules, preventing abuse and responding to lawful requests. The automatic check looks for nudity, sexual content, violence and self-harm; a photo that fails it is deleted and cannot be used on your profile. You can contest the decision by writing to us, and a person will review it.',
   ]))}
 
@@ -339,7 +339,7 @@ ${section('6. How long we keep it',
   list([
     'We keep your data for as long as your account exists.',
     'When you delete your account in the app (Profile → Account → Delete my account), your profile, photos and their check records, film taste, watchlist, film lists, swipes, matches, messages and push token are deleted immediately and permanently.',
-    `Usage analytics records are kept at Amplitude and are not removed automatically when you delete your account. If you want them deleted, write to ${CONFIG.email} after deleting your account and we will delete them within 30 days.`,
+    `Usage analytics records are kept at Amplitude. When you delete your account, Amplitude is automatically asked to delete them and completes the deletion within 30 days. If anything goes wrong, write to ${CONFIG.email}.`,
     'For community safety, reports about a person may be kept for up to 2 years after that person’s account is deleted.',
     'Copies in our providers’ backups and technical logs are removed at the end of their retention cycles.',
   ]))}
