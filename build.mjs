@@ -16,8 +16,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const CONFIG = {
-  // Who is responsible for the data (KVKK "veri sorumlusu").
-  controller: 'Dursun Melih Omaç',
+  // Who is responsible for the data (KVKK "veri sorumlusu"). Named by role
+  // rather than by the developer's own name, at the developer's request.
+  controller: {
+    tr: 'MovieForUs uygulamasının geliştiricisi',
+    en: 'the developer of the MovieForUs app',
+  },
   email: 'movieforus.destek@gmail.com',
   // Where the Supabase project runs. Established from the database host's
   // address against AWS's published ranges: eu-central-1.
@@ -194,7 +198,7 @@ page({
 <p>Bu metin, MovieForUs mobil uygulamasını kullanırken hangi kişisel verilerinin işlendiğini, neden işlendiğini, kimlerle paylaşıldığını ve 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamındaki haklarını açıklar.</p>
 
 ${section('1. Veri sorumlusu',
-  p(`Veri sorumlusu: ${CONFIG.controller}. Bize ${CONFIG.email} adresinden ulaşabilirsin.`))}
+  p(`Veri sorumlusu: ${CONFIG.controller.tr}. Bize ${CONFIG.email} adresinden ulaşabilirsin.`))}
 
 ${section('2. Hangi verileri işliyoruz',
   list([
@@ -278,7 +282,7 @@ page({
 <p>This policy explains what personal data the MovieForUs mobile app processes, why, who it is shared with, and your rights. The Turkish version is authoritative for users in Türkiye.</p>
 
 ${section('1. Controller',
-  p(`Data controller: ${CONFIG.controller}. Contact: ${CONFIG.email}.`))}
+  p(`Data controller: ${CONFIG.controller.en}. Contact: ${CONFIG.email}.`))}
 
 ${section('2. What we collect',
   list([
