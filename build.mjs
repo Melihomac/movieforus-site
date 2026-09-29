@@ -27,7 +27,7 @@ const CONFIG = {
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
   // Effective date of the privacy policy.
-  effective: '2026-09-28',
+  effective: '2026-09-29',
   // The app's page on the App Store.
   appStore: 'https://apps.apple.com/tr/app/movieforus/id6811587180',
 };
@@ -263,10 +263,20 @@ ${section('8. Hakların',
   p('KVKK md. 11 uyarınca verilerinin işlenip işlenmediğini öğrenme, bilgi talep etme, işlenme amacını öğrenme, aktarıldığı kişileri bilme, düzeltilmesini, silinmesini ya da yok edilmesini isteme, bunların aktarıldığı kişilere bildirilmesini isteme, otomatik sistemlerle yapılan bir analiz sonucuna itiraz etme ve zarara uğradıysan zararın giderilmesini talep etme hakların vardır.'),
   p(`Hesabını ve verilerini istediğin zaman uygulama içinden silebilirsin. Diğer talepler için ${CONFIG.email} adresine yazabilirsin; başvurunu en geç 30 gün içinde yanıtlarız.`))}
 
-${section('9. Çocuklar',
+${section('9. Avrupa Birliği, AEA ya da Birleşik Krallık’taysan (GDPR)',
+  p('Verilerin için AB Genel Veri Koruma Tüzüğü (GDPR) ya da Birleşik Krallık GDPR’ı da geçerlidir. Aşağıdakiler yukarıdaki bölümlere eklenir.'),
+  list([
+    'Hukuki dayanaklar: Hesabını, profilini, eşleşmeyi, mesajlaşmayı ve ortak odaları çalıştırmak seninle yaptığımız sözleşmenin ifasıdır (md. 6/1-b). Konum ve bildirimler açık rızana dayanır (md. 6/1-a); cihaz ayarlarından istediğin zaman geri alabilirsin. Cinsel yönelimini ortaya koyabilecek olan cinsiyetin ve ilgilendiğin cinsiyetler, onları girerken verdiğin açık rızaya dayanır (md. 9/2-a); hesabını silerek kaldırabilirsin. Fotoğraf kontrolü, şikayetlerin incelenmesi ve kötüye kullanımın önlenmesi güvenli bir topluluğa yönelik meşru menfaatimize (md. 6/1-f) ve yasal yükümlülüklere (md. 6/1-c) dayanır. Kullanım analizi, uygulamayı geliştirmeye yönelik meşru menfaatimize dayanır (md. 6/1-f); Ayarlar’daki “Kullanım verilerini paylaş” anahtarıyla istediğin zaman itiraz edebilirsin.',
+    `Hakların: Verilerine erişmeyi ve bir kopyasını taşınabilir bir biçimde almayı, düzeltilmesini ya da silinmesini, işlenmesinin kısıtlanmasını istemeyi, işlenmesine itiraz etmeyi ve verdiğin her rızayı istediğin zaman geri almayı talep edebilirsin; rızayı geri almak ondan önceki işlemeyi etkilemez. Bunların çoğunu uygulamada kendin yapabilirsin; diğerleri için ${CONFIG.email} adresine yaz. En geç bir ay içinde yanıtlarız.`,
+    'Otomatik kararlar: Otomatik fotoğraf kontrolü bir fotoğrafın gösterilip gösterilemeyeceğine karar verir. Bu kararı bir kişinin incelemesini isteyebilir, görüşünü bildirebilir ve karara itiraz edebilirsin.',
+    'Verilerin nerede: Profilin, mesajların ve kullanım analizi kayıtların Avrupa Birliği’nde tutulur (Supabase Frankfurt’ta, Amplitude AB sunucularında). 5. bölümde sayılan AB dışındaki sağlayıcılar (OpenAI, Expo, Google, Apple) yalnızca orada anlatılan verileri alır; bu aktarımlar, sağlayıcıların veri işleme şartlarındaki Avrupa Komisyonu Standart Sözleşme Maddelerine ya da sağlayıcı sertifikalıysa AB-ABD Veri Gizliliği Çerçevesi’ne dayanır.',
+    `Şikayet: Yaşadığın ya da çalıştığın ülkedeki veri koruma otoritesine şikayette bulunabilirsin; Birleşik Krallık’ta bu, Information Commissioner’s Office’tir (ico.org.uk). Önce bize ${CONFIG.email} adresinden yazarsan sorunu çözmeye çalışırız.`,
+  ]))}
+
+${section('10. Çocuklar',
   p('MovieForUs 18 yaşın altındaki kişiler için değildir. 18 yaşından küçük birine ait olduğunu fark ettiğimiz hesapları kapatırız.'))}
 
-${section('10. Değişiklikler',
+${section('11. Değişiklikler',
   p('Bu politikayı güncelleyebiliriz. Önemli bir değişiklik olduğunda seni uygulama içinden bilgilendiririz; güncel metin her zaman bu sayfadadır.'))}
 `,
 });
@@ -351,10 +361,20 @@ ${section('8. Your rights',
   p('You can access, correct or delete your data, object to processing, and ask who it has been shared with. You can delete your account and data at any time from within the app.'),
   p(`For any other request, write to ${CONFIG.email}; we reply within 30 days.`))}
 
-${section('9. Children',
+${section('9. If you are in the European Union, the EEA or the United Kingdom',
+  p('The EU General Data Protection Regulation (GDPR), or the UK GDPR, applies to your data as well. What follows adds to the sections above.'),
+  list([
+    'Legal bases: running your account, profile, matching, messages and shared rooms is the performance of our contract with you (Art. 6(1)(b)). Location and notifications rest on your consent (Art. 6(1)(a)), which you can withdraw in your device settings at any time. Your gender and the genders you are interested in, which may reveal your sexual orientation, rest on the explicit consent you give by entering them (Art. 9(2)(a)); you can remove them by deleting your account. Photo checks, handling reports and preventing abuse rest on our legitimate interest in a safe community (Art. 6(1)(f)) and on legal obligations (Art. 6(1)(c)). Usage analytics rests on our legitimate interest in improving the app (Art. 6(1)(f)); you can object at any time with the “Share usage data” switch in Settings.',
+    `Your rights: you can ask to access your data and receive a copy in a portable format, to have it corrected or erased, to restrict its processing, to object to it, and to withdraw any consent you gave at any time; withdrawing consent does not affect processing before it. Most of this you can do in the app yourself; for the rest, write to ${CONFIG.email}. We answer within one month.`,
+    'Automated decisions: the automatic photo check decides whether a photo can be shown. You can ask for a person to review the decision, give your view and contest it.',
+    'Where your data is: your profile, messages and usage analytics records are kept in the European Union (Supabase in Frankfurt, Amplitude on its EU servers). The providers outside the EU listed in section 5 (OpenAI, Expo, Google, Apple) receive only what is described there; transfers to them rely on the European Commission’s Standard Contractual Clauses in their data processing terms or, where the provider is certified, on the EU–US Data Privacy Framework.',
+    `Complaints: you can complain to the data protection authority where you live or work; in the United Kingdom that is the Information Commissioner’s Office (ico.org.uk). If you write to us first at ${CONFIG.email}, we will try to put things right.`,
+  ]))}
+
+${section('10. Children',
   p('MovieForUs is not for anyone under 18. We close accounts we find belong to someone under 18.'))}
 
-${section('10. Changes',
+${section('11. Changes',
   p('We may update this policy. We will let you know in the app about significant changes; the current version is always on this page.'))}
 `,
 });
