@@ -27,7 +27,7 @@ const CONFIG = {
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
   // Effective date of the privacy policy.
-  effective: '2026-09-29',
+  effective: '2026-09-30',
   // The app's page on the App Store.
   appStore: 'https://apps.apple.com/tr/app/movieforus/id6811587180',
 };
@@ -238,7 +238,7 @@ ${section('5. Hizmet sağlayıcılar ve yurt dışına aktarım',
   p('Uygulamayı çalıştırmak için aşağıdaki hizmet sağlayıcılardan yararlanıyoruz. Bu sağlayıcıların sunucuları Türkiye dışında bulunabilir; verilerin KVKK md. 9 kapsamında açık rızana dayanarak ya da Kanun’un öngördüğü diğer güvencelerle aktarılır.'),
   list([
     `Supabase: veritabanı, kimlik doğrulama, fotoğraf depolama ve anlık iletişim altyapısı. Sunucu bölgesi: ${CONFIG.region.tr}.`,
-    'Expo (650 Industries, ABD): bildirimlerin cihazına iletilmesi.',
+    'Expo (650 Industries, ABD): bildirimlerin cihazına iletilmesi ve uygulama güncellemelerinin dağıtılması. Expo bu sırada cihazının IP adresi ve hata kayıtları gibi teknik verileri kendi hizmetini geliştirmek için toplu olarak analiz edebilir; bu kullanımda Expo kendi gizlilik politikasına tabidir.',
     'OpenAI (ABD): profil fotoğraflarının otomatik kontrolü. Yüklediğin fotoğraf yalnızca bu kontrol için gönderilir. OpenAI, API üzerinden gelen verileri model eğitiminde kullanmaz; kötüye kullanımı izlemek için en fazla 30 gün saklayabilir.',
     'Amplitude (Amplitude, Inc., ABD; veriler Avrupa Birliği’ndeki sunucularında tutulur): kullanım analizi. Bu hizmete adın, e-posta adresin, fotoğrafların, mesajlarının içeriği, arama metinlerin, konumun, IP adresin, cinsiyetin ve eşleşme tercihlerin gönderilmez; yalnızca hesap kimliğinle tanınırsın.',
     'Apple: Apple ile giriş, bildirimlerin iOS cihazına ulaştırılması ve konumdan şehir adının bulunması.',
@@ -336,7 +336,7 @@ ${section('5. Service providers and international transfers',
   p('We rely on the providers below, whose servers may be located outside Türkiye.'),
   list([
     `Supabase: database, authentication, photo storage and realtime infrastructure. Server region: ${CONFIG.region.en}.`,
-    'Expo (650 Industries, USA): delivering push notifications.',
+    'Expo (650 Industries, USA): delivering push notifications and app updates. While doing so, Expo may analyse technical data such as your device’s IP address and crash reports, in aggregate, to improve its own service; for that use Expo is subject to its own privacy policy.',
     'OpenAI (USA): the automatic check of profile photos. A photo you upload is sent only for that check. OpenAI does not use data sent through its API to train models, and may keep it for up to 30 days to monitor abuse.',
     'Amplitude (Amplitude, Inc., USA; the data is kept on its servers in the European Union): usage analytics. Your name, email address, photos, message content, search text, location, IP address, gender and matching preferences are not sent to it; it knows you only by your account identifier.',
     'Apple: Sign in with Apple, delivering notifications to iOS devices and looking up a city name from a location.',
