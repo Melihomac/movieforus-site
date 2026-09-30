@@ -29,7 +29,7 @@ const CONFIG = {
   // Effective date of the privacy policy.
   effective: '2026-09-30',
   // The app's page on the App Store.
-  appStore: 'https://apps.apple.com/tr/app/movieforus/id6811587180',
+  appStore: 'https://apps.apple.com/app/movieforus/id6811587180',
 };
 
 const app = path.join(process.env.HOME, 'Developer/MovieForUs');
