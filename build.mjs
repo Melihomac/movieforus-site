@@ -74,6 +74,8 @@ const twin = {
   'terms.html': 'sartlar.html',
   'destek.html': 'support.html',
   'support.html': 'destek.html',
+  'hesap-silme.html': 'delete-account.html',
+  'delete-account.html': 'hesap-silme.html',
 };
 
 function page({ file, lang = 'tr', title, description, body }) {
@@ -447,7 +449,8 @@ ${section('Birini nasıl engellerim?',
   p('Eşleşme ekranında ⋯ menüsünden “Engelle”yi seç. Engellediğin kişi seninle bir daha eşleşemez ve sana yazamaz.'))}
 
 ${section('Hesabımı nasıl silerim?',
-  p('Profil → Hesap bölümündeki “Hesabımı sil” bağlantısını kullan. Profilin, fotoğrafların, eşleşmelerin ve mesajların hemen ve kalıcı olarak silinir.'))}
+  p('Profil → Hesap bölümündeki “Hesabımı sil” bağlantısını kullan. Profilin, fotoğrafların, eşleşmelerin ve mesajların hemen ve kalıcı olarak silinir.'),
+  '<p>Uygulamaya giremiyorsan <a href="hesap-silme.html">hesap silme sayfasındaki</a> adımları izle.</p>')}
 
 ${section('Neden kimseyle eşleşemiyorum?',
   p('Eşleşme için profilinin tamamlanmış olması, konum izni vermen ve karşı tarafla aynı filmlerin en az 8 tanesinde karar vermiş olmanız gerekir. Günde 30 film kaydırabilirsin; ortak filmler birkaç günde birikir.'))}
@@ -478,7 +481,8 @@ ${section('How do I block someone?',
   p('On the match screen, open the ⋯ menu and choose “Block”. Somebody you block can no longer match with you or write to you.'))}
 
 ${section('How do I delete my account?',
-  p('Use “Delete my account” under Profile → Account. Your profile, your photos, your matches and your messages are deleted immediately and permanently.'))}
+  p('Use “Delete my account” under Profile → Account. Your profile, your photos, your matches and your messages are deleted immediately and permanently.'),
+  '<p>If you cannot get into the app, follow the steps on the <a href="delete-account.html">account deletion page</a>.</p>')}
 
 ${section('Why am I not matching with anyone?',
   p('Matching needs a finished profile, location permission, and either agreement with somebody on at least 8 of the same films or 5 of the same films liked. You can swipe 30 films a day; films in common build up over a few days.'))}
@@ -550,3 +554,95 @@ console.log(
 if (unfilled.length) {
   console.log(`NOT READY TO PUBLISH — fill in: ${unfilled.map(([key]) => key).join(', ')}`);
 }
+
+/* ------------------------------------------------------------------ */
+/* account deletion                                                    */
+/* ------------------------------------------------------------------ */
+// Google Play asks for a page, reachable without the app, that says how to
+// delete an account and its data, what is deleted and what is kept. It has
+// to match what the app and the privacy policy (section 6) actually do.
+
+page({
+  file: 'hesap-silme.html',
+  title: 'Hesap silme — MovieForUs',
+  description: 'MovieForUs hesabını ve verilerini nasıl silebileceğin.',
+  body: `
+<h1>Hesabını ve verilerini silme</h1>
+<p>Bu sayfa, <strong>MovieForUs</strong> uygulamasındaki hesabını ve ona bağlı verileri nasıl silebileceğini anlatır.</p>
+<p class="muted"><a href="delete-account.html">English</a></p>
+
+${section('1. Uygulamanın içinden (en hızlı yol)',
+  list([
+    'MovieForUs’u aç ve alttaki Profil sekmesine geç.',
+    'Aşağı kaydırıp Hesap bölümünde “Hesabımı sil”’e dokun.',
+    '“Kalıcı olarak sil” ile onayla. Hesabın ve verilerin hemen silinir.',
+  ]))}
+
+${section('2. Uygulamaya giremiyorsan',
+  p(`Hesabına bağlı e-posta adresinden ${CONFIG.email} adresine “Hesap silme” konulu bir e-posta gönder. Apple ya da Google ile giriş yaptıysan o hesabın e-posta adresinden yaz. Hesabın sana ait olduğunu doğruladıktan sonra en geç 30 gün içinde siler ve sana haber veririz.`),
+  p('Misafir hesaplar bir e-postaya bağlı olmadığı için yalnızca açıldıkları cihazdan, uygulamanın içinden silinebilir.'))}
+
+${section('Neler silinir',
+  list([
+    'Profilin, fotoğrafların ve fotoğraf kontrol kayıtları',
+    'Film zevkin, anket cevapların ve beğendiğin filmler',
+    'İzleme listen, film listelerin ve kaydırmaların',
+    'Eşleşmelerin, mesajların, ortak odaların ve bildirim anahtarın',
+    'Kullanım analizi kayıtların: Amplitude’dan silinmeleri otomatik olarak istenir ve en geç 30 gün içinde silinir.',
+  ]))}
+
+${section('Neler bir süre saklanır',
+  list([
+    'Topluluğun güvenliği için, senin hakkında yapılmış şikayet kayıtları hesabın silindikten sonra en fazla 2 yıl saklanabilir. Senin yaptığın şikayetlerde adın silinir.',
+    'Hizmet sağlayıcılarımızın yedeklerinde kalan kopyalar, onların saklama döngüsü sonunda silinir.',
+  ]))}
+
+${section('Hesabını silmeden bazı verileri silmek',
+  p(`Profil fotoğrafını, profil bilgilerini, beğendiğin filmleri ve listelerini uygulamanın içinden istediğin zaman değiştirebilir ya da kaldırabilirsin. Kullanım verisi paylaşımını Ayarlar → Gizlilik bölümünden kapatabilirsin. Başka bir verinin silinmesini istersen ${CONFIG.email} adresine yaz.`))}
+
+<p class="muted">Ayrıntılar için <a href="gizlilik.html">Gizlilik Politikası</a>’nın 6. bölümüne bakabilirsin.</p>
+`,
+});
+
+page({
+  file: 'delete-account.html',
+  lang: 'en',
+  title: 'Delete your account — MovieForUs',
+  description: 'How to delete your MovieForUs account and data.',
+  body: `
+<h1>Deleting your account and data</h1>
+<p>This page explains how to delete your account and the data linked to it in <strong>MovieForUs</strong>.</p>
+<p class="muted"><a href="hesap-silme.html">Türkçe</a></p>
+
+${section('1. In the app (the quickest way)',
+  list([
+    'Open MovieForUs and go to the Profile tab.',
+    'Scroll down to Account and tap “Delete my account”.',
+    'Confirm with “Delete permanently”. Your account and data are deleted immediately.',
+  ]))}
+
+${section('2. If you cannot get into the app',
+  p(`Send an email with the subject “Delete my account” to ${CONFIG.email} from the email address linked to your account. If you signed in with Apple or Google, write from that account’s address. Once we have confirmed the account is yours, we delete it within 30 days and let you know.`),
+  p('Guest accounts are not linked to an email address, so they can only be deleted from inside the app, on the device they were created on.'))}
+
+${section('What is deleted',
+  list([
+    'Your profile, your photos and their check records',
+    'Your taste in films, your survey answers and the films you liked',
+    'Your watchlist, your film lists and your swipes',
+    'Your matches, your messages, your shared rooms and your notification token',
+    'Your usage analytics records: Amplitude is automatically asked to delete them, and does so within 30 days.',
+  ]))}
+
+${section('What is kept for a while',
+  list([
+    'For the safety of the community, reports made about you may be kept for up to 2 years after your account is deleted. Reports you made no longer carry your name.',
+    'Copies in our service providers’ backups are deleted at the end of their retention cycle.',
+  ]))}
+
+${section('Deleting some data without deleting your account',
+  p(`You can change or remove your profile photo, your profile details, the films you liked and your lists in the app at any time. You can turn off usage data sharing under Settings → Privacy. To have any other data deleted, write to ${CONFIG.email}.`))}
+
+<p class="muted">For details, see section 6 of the <a href="privacy.html">Privacy Policy</a>.</p>
+`,
+});
