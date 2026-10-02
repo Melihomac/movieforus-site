@@ -27,7 +27,7 @@ const CONFIG = {
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
   // Effective date of the privacy policy.
-  effective: '2026-09-30',
+  effective: '2026-10-02',
   // The app's page on the App Store.
   appStore: 'https://apps.apple.com/app/movieforus/id6811587180',
 };
@@ -133,7 +133,7 @@ page({
 <section class="hero">
   <h1>${wordmark}</h1>
   <p class="lead">Film zevkin tutan biriyle tanış.</p>
-  <p>Film kaydır, beğendiklerin ve geçtiklerin üzerinden zevkin ortaya çıksın. Aynı filmlerde seninle anlaşan, 100 km içindeki kişilerle eşleş; sohbet et, ardından birlikte izleyeceğiniz filmi birlikte seçin.</p>
+  <p>Film kaydır, beğendiklerin ve geçtiklerin üzerinden zevkin ortaya çıksın. Aynı filmlerde seninle anlaşan, 300 km içindeki kişilerle eşleş; sohbet et, ardından birlikte izleyeceğiniz filmi birlikte seçin.</p>
   <p class="store">
     <!-- Apple's own badge, unmodified and at its own proportions, as its
          marketing guidelines require. The black badge carries its own
@@ -168,7 +168,7 @@ page({
 <section class="hero">
   <h1>${wordmark}</h1>
   <p class="lead">Meet someone with your taste in films.</p>
-  <p>Swipe through films and let your taste show in what you keep and what you pass on. Match with people within 100 km who agree with you on the same films; talk, then pick what to watch together, together.</p>
+  <p>Swipe through films and let your taste show in what you keep and what you pass on. Match with people within 300 km who agree with you on the same films; talk, then pick what to watch together, together.</p>
   <p class="store">
     <a class="store-badge" href="${CONFIG.appStore}">
       <img src="app-store-badge-tr.svg" alt="Download on the App Store" width="151" height="40">
@@ -219,7 +219,7 @@ ${section('2. Hangi verileri işliyoruz',
 ${section('3. Verilerini neden işliyoruz',
   list([
     'Hizmeti sunmak (KVKK md. 5/2-c, sözleşmenin kurulması ve ifası): hesabını yönetmek, profilini göstermek, film zevkine göre eşleşme önermek, mesajlaşmayı ve ortak odaları çalıştırmak.',
-    'Konuma dayalı eşleşme (açık rıza): yalnızca 100 km içindeki kişilerle eşleşebilmen için mesafe hesaplamak. Konum iznini cihaz ayarlarından istediğin zaman geri alabilirsin; bu durumda eşleşme özelliği çalışmaz.',
+    'Konuma dayalı eşleşme (açık rıza): yalnızca 300 km içindeki (fan kulüplerinde 1000 km içindeki) kişilerle eşleşebilmen için mesafe hesaplamak. Konum iznini cihaz ayarlarından istediğin zaman geri alabilirsin; bu durumda eşleşme özelliği çalışmaz.',
     'Özel nitelikli veriler (açık rıza): cinsiyetin ve ilgilendiğin cinsiyetler, cinsel hayatına ilişkin bilgi ortaya koyabilir. Bu bilgileri yalnızca eşleşme önerisi için ve açık rızanla işleriz.',
     'Bildirimler (açık rıza): yeni eşleşme ve mesajları haber vermek. Bildirim iznini cihaz ayarlarından kapatabilirsin.',
     'Uygulamayı geliştirmek (KVKK md. 5/2-f, meşru menfaat): hangi özelliklerin ne kadar kullanıldığını, kişilerin nerede zorlandığını ve hangi değişikliklerin işe yaradığını anlamak için kullanım verilerini analiz etmek. Bu analiz, Kullanım Şartları’nda anlatıldığı için şartları kabul etmeden başlamaz; kabulden önce yaptıkların (örneğin kayıt olman) cihazında bekletilir. Uygulamayı kullanmak için bu analize izin vermen gerekmez: Profil → Ayarlar → Gizlilik bölümündeki “Kullanım verilerini paylaş” anahtarını kapattığında o cihazdan bir daha kullanım verisi gönderilmez.',
@@ -228,9 +228,10 @@ ${section('3. Verilerini neden işliyoruz',
 
 ${section('4. Bilgilerini kimler görebilir',
   list([
-    'Eşleştiğin kişiler: görünen adın, fotoğrafın, yaşın, boyun, sigara ve alkol bilgin, film alıntın, cinsiyetin, aranızdaki yuvarlanmış yaklaşık mesafe, ortak beğendiğiniz filmler ve uyum oranınız. Doğum tarihin ve tam konumun kimseye gösterilmez.',
+    'Eşleştiğin kişiler: görünen adın, fotoğrafın, yaşın, boyun, sigara ve alkol bilgin, film alıntın, cinsiyetin, aranızdaki yuvarlanmış yaklaşık mesafe, ortak beğendiğiniz filmler, uyum oranınız ve katıldığın fan kulüpleri. Doğum tarihin ve tam konumun kimseye gösterilmez.',
+    'Fan kulüpleri: bir kulübe katılırken verdiğin 5 cevap saklanır. Hangi kulüplerde olduğunu yalnızca sen ve eşleştiğin kişiler görebilir; bir kulüp üzerinden eşleştiğin kişi, aynı cevapları verdiğiniz soruları da görür. Kulüpten istediğin zaman ayrılabilirsin; ayrıldığında cevapların silinir.',
     'Aynı odadaki kişiler: görünen adın, emojin ve profil fotoğrafın. Bir odaya ancak kodunu paylaştığın kişiler girebilir; eşleşmeden açılan odalar yalnızca o iki kişiye açıktır.',
-    'Bir filmin sayfasını açan, eşleşebileceğin kişiler: o filmi kalple beğendiysen fotoğrafın orada bulanıklaştırılmış olarak, en fazla iki kişilik küçük bir daire ve bir sayı içinde görünebilir. Adın, yaşın, mesafen ya da başka hangi filmleri beğendiğin gösterilmez ve yalnızca senin eşleşme filtrenden (yaş aralığı, cinsiyet tercihi, 100 km) karşılıklı olarak geçen kişiler bunu görebilir. Bunu istemiyorsan uygulamada Profil → Ayarlar → Gizlilik bölümündeki “Film sayfalarında fotoğrafım” anahtarını kapatabilirsin; kapattığında fotoğrafın yine yalnızca eşleştiğin kişilere ve aynı odadakilere gösterilir, eşleşme özelliğin bundan etkilenmez.',
+    'Bir filmin sayfasını açan, eşleşebileceğin kişiler: o filmi kalple beğendiysen fotoğrafın orada bulanıklaştırılmış olarak, en fazla iki kişilik küçük bir daire ve bir sayı içinde görünebilir. Adın, yaşın, mesafen ya da başka hangi filmleri beğendiğin gösterilmez ve yalnızca senin eşleşme filtrenden (yaş aralığı, cinsiyet tercihi, 300 km) karşılıklı olarak geçen kişiler bunu görebilir. Bunu istemiyorsan uygulamada Profil → Ayarlar → Gizlilik bölümündeki “Film sayfalarında fotoğrafım” anahtarını kapatabilirsin; kapattığında fotoğrafın yine yalnızca eşleştiğin kişilere ve aynı odadakilere gösterilir, eşleşme özelliğin bundan etkilenmez.',
     'Bir eşleşmeyi geçer ya da kişiyi engellersen fotoğrafına erişimi kapanır.',
     'Moderatörler: yalnızca incelenen bir şikayetle ya da fotoğraf kontrolüne yapılan bir itirazla ilgili bilgiler.',
     'Yetkili kamu kurumları: yalnızca yasal bir zorunluluk olduğunda.',
@@ -317,7 +318,7 @@ ${section('2. What we collect',
 ${section('3. Why we process it',
   list([
     'To provide the service: managing your account, showing your profile, suggesting matches based on film taste, and running messaging and shared rooms.',
-    'Location-based matching (consent): to calculate distance so that you are matched only with people within 100 km. You can withdraw location permission in your device settings at any time; matching then stops working.',
+    'Location-based matching (consent): to calculate distance so that you are matched only with people within 300 km (1000 km in fan clubs). You can withdraw location permission in your device settings at any time; matching then stops working.',
     'Special category data (explicit consent): your gender and the genders you are interested in may reveal information about your sex life or orientation. We use them only to suggest matches.',
     'Notifications (consent): to tell you about new matches and messages. You can turn them off in your device settings.',
     'Improving the app (legitimate interest): analysing usage data to understand which features are used and how much, where people struggle and which changes work. Because the Terms of Use describe it, it does not start before you accept them; what you do before that (signing up, for instance) is held on your device. You do not have to allow it to use the app: turn off “Share usage data” under Profile → Settings → Privacy and no more usage data is sent from that device.',
@@ -326,9 +327,10 @@ ${section('3. Why we process it',
 
 ${section('4. Who can see your information',
   list([
-    'People you match with: your display name, photo, age, height, smoking and drinking habits, film quote, gender, a rounded approximate distance between you, films you both liked and your compatibility score. Your date of birth and exact location are never shown.',
+    'People you match with: your display name, photo, age, height, smoking and drinking habits, film quote, gender, a rounded approximate distance between you, films you both liked, your compatibility score and the fan clubs you are in. Your date of birth and exact location are never shown.',
+    'Fan clubs: the 5 answers you give when you join a club are stored. Only you and the people you match with can see which clubs you are in; someone you matched with through a club also sees the questions you answered alike. You can leave a club at any time, and your answers are deleted when you do.',
     'People in the same room: your display name, emoji and profile photo. A room can only be entered by someone you send the code to; a room opened from a match belongs to those two people alone.',
-    'People who could match with you and open a film\u2019s page: if you have hearted that film, your photo can appear there blurred, inside a small circle among at most two, next to a count. Your name, age, distance and the other films you like are not shown, and only people who pass your matching filters (age range, gender preference, 100 km) mutually can see it. You can turn this off in the app under Profile \u2192 Settings \u2192 Privacy, \u201cMy photo on film pages\u201d; with it off your photo is again shown only to your matches and the people in your rooms, and your matching is unaffected.',
+    'People who could match with you and open a film\u2019s page: if you have hearted that film, your photo can appear there blurred, inside a small circle among at most two, next to a count. Your name, age, distance and the other films you like are not shown, and only people who pass your matching filters (age range, gender preference, 300 km) mutually can see it. You can turn this off in the app under Profile \u2192 Settings \u2192 Privacy, \u201cMy photo on film pages\u201d; with it off your photo is again shown only to your matches and the people in your rooms, and your matching is unaffected.',
     'If you pass a match or block someone, their access to your photo ends.',
     'Moderators: only what relates to a report under review or to a contested photo check.',
     'Public authorities: only where the law requires it.',
