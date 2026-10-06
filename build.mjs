@@ -76,6 +76,8 @@ const twin = {
   'support.html': 'destek.html',
   'hesap-silme.html': 'delete-account.html',
   'delete-account.html': 'hesap-silme.html',
+  'cocuk-guvenligi.html': 'child-safety.html',
+  'child-safety.html': 'cocuk-guvenligi.html',
 };
 
 function page({ file, lang = 'tr', title, description, body }) {
@@ -646,5 +648,92 @@ ${section('Deleting some data without deleting your account',
   p(`You can change or remove your profile photo, your profile details, the films you liked and your lists in the app at any time. You can turn off usage data sharing under Settings → Privacy. To have any other data deleted, write to ${CONFIG.email}.`))}
 
 <p class="muted">For details, see section 6 of the <a href="privacy.html">Privacy Policy</a>.</p>
+`,
+});
+
+/* ------------------------------------------------------------------ */
+/* child safety standards                                              */
+/* ------------------------------------------------------------------ */
+// Google Play requires every dating and social app to publish its standards
+// against child sexual abuse and exploitation (CSAE), with a contact. Every
+// statement here has to be true of the app: the 18+ birth date check
+// (MinAge), the photo screening (supabase/functions/moderate-photo), the
+// "May be under 18" report reason, and a chat that carries text and films
+// only, never pictures.
+
+page({
+  file: 'cocuk-guvenligi.html',
+  title: 'Çocuk güvenliği standartları — MovieForUs',
+  description: 'MovieForUs’un çocukların cinsel istismarına ve sömürüsüne karşı standartları.',
+  body: `
+<h1>Çocuk güvenliği standartları</h1>
+<p><strong>MovieForUs</strong>, yalnızca 18 yaş ve üzerindeki kişiler için bir tanışma uygulamasıdır. Çocukların cinsel istismarına ve sömürüsüne (CSAE) ve çocukların cinsel istismarını içeren materyallere (CSAM) karşı <strong>sıfır tolerans</strong> uygularız.</p>
+<p class="muted"><a href="child-safety.html">English</a></p>
+
+${section('Yasak olanlar',
+  list([
+    'Çocukların cinsel istismarını ya da sömürüsünü gösteren, öven, teşvik eden ya da buna yol açan her türlü içerik ve davranış',
+    'Bir çocukla cinsel amaçlı iletişim kurmaya, onu kandırmaya ya da kışkırtmaya çalışmak (grooming)',
+    '18 yaşından küçük birinin hesap açması ya da başkası adına hesap açılması',
+  ]),
+  p('Bu kurallar Kullanım Şartları’nın parçasıdır ve uygulamayı kullanmadan önce kabul edilir.'))}
+
+${section('Nasıl önlüyoruz',
+  list([
+    'Yaş sınırı: Eşleşme profili açarken doğum tarihi istenir; 18 yaşından küçük bir tarih kabul edilmez.',
+    'Fotoğraf denetimi: Her profil fotoğrafı, kimse görmeden önce otomatik olarak denetlenir; cinsel içerikli fotoğraflar reddedilir ve silinir.',
+    'Sohbette fotoğraf yok: Eşleşmeler arasında yalnızca yazı ve film gönderilebilir; fotoğraf, video ya da dosya gönderilemez.',
+    'Şikayet: Her profil ve her mesaj uygulamanın içinden tek dokunuşla şikayet edilebilir; “18 yaşından küçük olabilir” ayrı bir şikayet sebebidir. Kişiler engellenebilir.',
+  ]))}
+
+${section('Bir şikayet geldiğinde',
+  list([
+    'Şikayetler bize anında bildirilir ve en geç 24 saat içinde incelenir.',
+    'Çocuk güvenliğiyle ilgili bir şikayette içerik derhal kaldırılır ve hesap kalıcı olarak kapatılır.',
+    'Çocukların cinsel istismarını içeren materyal ya da bir çocuğun tehlikede olduğuna dair bir bilgi, ilgili yasalara uygun olarak yetkili makamlara bildirilir: Türkiye’de kolluk kuvvetlerine ve savcılığa, uluslararası alanda NCMEC’e (CyberTipline). Kayıtlar, yetkililerin talebi için yasaların öngördüğü süre boyunca saklanır.',
+  ]))}
+
+${section('İletişim',
+  p(`Çocuk güvenliğiyle ilgili her türlü bildirim ve soru için: ${CONFIG.email}. Bu adres, MovieForUs’un çocuk güvenliği uygulamalarından sorumlu kişiye ulaşır.`),
+  p('Bir çocuk hemen tehlikedeyse önce bulunduğun ülkenin acil durum numarasını ara (Türkiye’de 112).'))}
+`,
+});
+
+page({
+  file: 'child-safety.html',
+  lang: 'en',
+  title: 'Child safety standards — MovieForUs',
+  description: 'MovieForUs’s standards against child sexual abuse and exploitation.',
+  body: `
+<h1>Child safety standards</h1>
+<p><strong>MovieForUs</strong> is a dating app for people aged 18 and over only. We have <strong>zero tolerance</strong> for child sexual abuse and exploitation (CSAE) and for child sexual abuse material (CSAM).</p>
+<p class="muted"><a href="cocuk-guvenligi.html">Türkçe</a></p>
+
+${section('What is prohibited',
+  list([
+    'Any content or behaviour that depicts, praises, encourages or leads to the sexual abuse or exploitation of children',
+    'Contacting, deceiving or enticing a child for sexual purposes (grooming)',
+    'Anyone under 18 opening an account, or an account opened on their behalf',
+  ]),
+  p('These rules are part of the Terms of Use, which are accepted before the app can be used.'))}
+
+${section('How we prevent it',
+  list([
+    'Age limit: a date of birth is required to set up a matching profile, and a date under 18 is not accepted.',
+    'Photo screening: every profile photo is checked automatically before anyone sees it; sexual photos are refused and deleted.',
+    'No pictures in chat: matches can send each other text and films only, never photos, videos or files.',
+    'Reporting: every profile and every message can be reported from inside the app with one tap, and “May be under 18” is a reason of its own. People can be blocked.',
+  ]))}
+
+${section('When something is reported',
+  list([
+    'Reports reach us immediately and are reviewed within 24 hours.',
+    'For a report concerning child safety, the content is removed at once and the account is closed for good.',
+    'Child sexual abuse material, or information that a child is in danger, is reported to the competent authorities as the law requires: law enforcement and prosecutors in Türkiye, and NCMEC (CyberTipline) internationally. Records are kept for as long as the law provides, for the authorities to request.',
+  ]))}
+
+${section('Contact',
+  p(`For any report or question about child safety: ${CONFIG.email}. This address reaches the person responsible for MovieForUs’s child safety practices.`),
+  p('If a child is in immediate danger, call your local emergency number first.'))}
 `,
 });
