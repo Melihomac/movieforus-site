@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join a room — MovieForUs</title>
+<meta name="description" content="Join a shared room on MovieForUs: swipe the same films together and find the one you all like.">
+<link rel="alternate" hreflang="tr" href="katil.html">
+<link rel="alternate" hreflang="en" href="join.html">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="./"><span class="wordmark">Movie<span class="for">For</span>Us</span></a><nav><a href="en.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="support.html">Support</a><a class="lang" href="katil.html" hreflang="tr">Türkçe</a></nav></header>
+<main>
+
+<h1>Decide together what to watch tonight</h1>
+<p>A friend has invited you to their shared room on MovieForUs. Swipe the same films together, and the ones you all like come up.</p>
+<p class="muted"><a href="katil.html">Türkçe</a></p>
+
+<div id="with-code">
+  <p class="muted">Room code</p>
+  <p class="room-code" id="room-code">——————</p>
+  <div class="actions">
+    <a class="button primary" id="open-room" href="#">Open in MovieForUs</a>
+  </div>
+</div>
+<p id="no-code" hidden>This link does not carry a valid room code. Ask the person who invited you for the code again.</p>
+
+<section><h2>Don’t have the app yet?</h2><div class="actions"><a class="button" href="https://apps.apple.com/app/movieforus/id6811587180">Download on the App Store</a></div>
+<p>Coming soon to Google Play for Android.</p>
+<ol><li>Download MovieForUs and open it.</li><li>On the Profile tab, tap “Open or join a room”.</li><li>Type the code above and tap “Join”.</li></ol></section>
+
+<script>
+(function () {
+  var code = (new URLSearchParams(location.search).get('code') || '').toUpperCase();
+  if (!/^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{6}$/.test(code)) code = '';
+  var shown = document.getElementById('room-code');
+  var open = document.getElementById('open-room');
+  if (code) {
+    shown.textContent = code;
+    open.href = 'movieforus://room/' + code;
+  } else {
+    document.getElementById('with-code').hidden = true;
+    document.getElementById('no-code').hidden = false;
+  }
+})();
+</script>
+
+</main>
+<footer>
+  <a class="tmdb" href="https://www.themoviedb.org/"><img src="tmdb-logo.svg" alt="TMDB"></a>
+  <p>This application uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.</p>
+  
+  <p>© 2026 MovieForUs</p>
+</footer>
+</body>
+</html>

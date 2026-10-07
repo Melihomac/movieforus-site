@@ -30,6 +30,10 @@ const CONFIG = {
   effective: '2026-10-02',
   // The app's page on the App Store.
   appStore: 'https://apps.apple.com/app/movieforus/id6811587180',
+  // The app's page on Google Play. Empty until the app is public there: while
+  // it is only in closed testing the page says "not found" to everybody else,
+  // so the room page says it is coming instead of linking to it.
+  playStore: '',
 };
 
 const app = path.join(process.env.HOME, 'Developer/MovieForUs');
@@ -78,6 +82,8 @@ const twin = {
   'delete-account.html': 'hesap-silme.html',
   'cocuk-guvenligi.html': 'child-safety.html',
   'child-safety.html': 'cocuk-guvenligi.html',
+  'katil.html': 'join.html',
+  'join.html': 'katil.html',
 };
 
 function page({ file, lang = 'tr', title, description, body }) {
@@ -547,7 +553,105 @@ footer { max-width: 820px; margin: 0 auto; padding: 24px; border-top: 1px solid 
 footer p { color: var(--muted); margin: 6px 0; }
 /* TMDB's terms: its mark, smaller than MovieForUs's own. */
 .tmdb img { height: 14px; width: auto; display: block; margin-bottom: 8px; }
+/* The room invitation page. */
+.room-code { font-size: 44px; font-weight: 800; letter-spacing: 0.18em; margin: 8px 0 20px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 20px; }
+.button { display: inline-block; padding: 14px 22px; border-radius: 999px; font-weight: 700;
+  border: 1px solid var(--border); color: var(--text); }
+.button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.button:hover { opacity: .88; }
+ol { padding-left: 22px; }
 `);
+
+
+/* ------------------------------------------------------------------ */
+/* room invitation                                                     */
+/* ------------------------------------------------------------------ */
+// Where a room invitation from the app points (roomInviteUrl in the app's
+// constants/legal.ts): katil.html?code=XXXXXX. It opens the room in the app
+// through the app's own scheme, and for somebody who does not have the app
+// yet shows the code and where to get it. Nothing is sent anywhere: the code
+// is read in the browser and only ever put back on this page.
+
+// Room codes are six characters from room_code() (supabase/match-room.sql);
+// anything else is not shown, so the page cannot be made to display a
+// stranger's text.
+const roomScript = `
+<script>
+(function () {
+  var code = (new URLSearchParams(location.search).get('code') || '').toUpperCase();
+  if (!/^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{6}$/.test(code)) code = '';
+  var shown = document.getElementById('room-code');
+  var open = document.getElementById('open-room');
+  if (code) {
+    shown.textContent = code;
+    open.href = 'movieforus://room/' + code;
+  } else {
+    document.getElementById('with-code').hidden = true;
+    document.getElementById('no-code').hidden = false;
+  }
+})();
+</script>`;
+
+const playTR = CONFIG.playStore
+  ? `<a class="button" href="${CONFIG.playStore}">Google Play’den indir</a>`
+  : '';
+const playEN = CONFIG.playStore
+  ? `<a class="button" href="${CONFIG.playStore}">Get it on Google Play</a>`
+  : '';
+
+page({
+  file: 'katil.html',
+  title: 'Odaya katıl — MovieForUs',
+  description: 'MovieForUs’ta ortak odaya katıl: aynı filmleri birlikte kaydırın, hepinizin beğendiği film çıksın.',
+  body: `
+<h1>Bu akşam ne izleyeceğinize birlikte karar verin</h1>
+<p>Bir arkadaşın seni MovieForUs’ta ortak odasına çağırdı. Aynı filmleri birlikte kaydırın; hepinizin beğendiği filmler karşınıza çıksın.</p>
+<p class="muted"><a href="join.html">English</a></p>
+
+<div id="with-code">
+  <p class="muted">Oda kodu</p>
+  <p class="room-code" id="room-code">——————</p>
+  <div class="actions">
+    <a class="button primary" id="open-room" href="#">MovieForUs’ta aç</a>
+  </div>
+</div>
+<p id="no-code" hidden>Bu bağlantıda geçerli bir oda kodu yok. Seni davet eden kişiden kodu tekrar iste.</p>
+
+${section('Uygulama sende yok mu?',
+  `<div class="actions"><a class="button" href="${CONFIG.appStore}">App Store’dan indir</a>${playTR}</div>`,
+  CONFIG.playStore ? '' : p('Android sürümü yakında Google Play’de.'),
+  `<ol><li>${fill('MovieForUs’u indir ve aç.')}</li><li>${fill('Profil sekmesinde “Oda kur veya katıl”a dokun.')}</li><li>${fill('Yukarıdaki kodu yaz ve “Katıl”a dokun.')}</li></ol>`)}
+${roomScript}
+`,
+});
+
+page({
+  file: 'join.html',
+  lang: 'en',
+  title: 'Join a room — MovieForUs',
+  description: 'Join a shared room on MovieForUs: swipe the same films together and find the one you all like.',
+  body: `
+<h1>Decide together what to watch tonight</h1>
+<p>A friend has invited you to their shared room on MovieForUs. Swipe the same films together, and the ones you all like come up.</p>
+<p class="muted"><a href="katil.html">Türkçe</a></p>
+
+<div id="with-code">
+  <p class="muted">Room code</p>
+  <p class="room-code" id="room-code">——————</p>
+  <div class="actions">
+    <a class="button primary" id="open-room" href="#">Open in MovieForUs</a>
+  </div>
+</div>
+<p id="no-code" hidden>This link does not carry a valid room code. Ask the person who invited you for the code again.</p>
+
+${section('Don’t have the app yet?',
+  `<div class="actions"><a class="button" href="${CONFIG.appStore}">Download on the App Store</a>${playEN}</div>`,
+  CONFIG.playStore ? '' : p('Coming soon to Google Play for Android.'),
+  `<ol><li>${fill('Download MovieForUs and open it.')}</li><li>${fill('On the Profile tab, tap “Open or join a room”.')}</li><li>${fill('Type the code above and tap “Join”.')}</li></ol>`)}
+${roomScript}
+`,
+});
 
 /* ------------------------------------------------------------------ */
 

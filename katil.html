@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odaya katıl — MovieForUs</title>
+<meta name="description" content="MovieForUs’ta ortak odaya katıl: aynı filmleri birlikte kaydırın, hepinizin beğendiği film çıksın.">
+<link rel="alternate" hreflang="en" href="join.html">
+<link rel="alternate" hreflang="tr" href="katil.html">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="./"><span class="wordmark">Movie<span class="for">For</span>Us</span></a><nav><a href="./">Ana sayfa</a><a href="gizlilik.html">Gizlilik</a><a href="sartlar.html">Şartlar</a><a href="destek.html">Destek</a><a class="lang" href="join.html" hreflang="en">English</a></nav></header>
+<main>
+
+<h1>Bu akşam ne izleyeceğinize birlikte karar verin</h1>
+<p>Bir arkadaşın seni MovieForUs’ta ortak odasına çağırdı. Aynı filmleri birlikte kaydırın; hepinizin beğendiği filmler karşınıza çıksın.</p>
+<p class="muted"><a href="join.html">English</a></p>
+
+<div id="with-code">
+  <p class="muted">Oda kodu</p>
+  <p class="room-code" id="room-code">——————</p>
+  <div class="actions">
+    <a class="button primary" id="open-room" href="#">MovieForUs’ta aç</a>
+  </div>
+</div>
+<p id="no-code" hidden>Bu bağlantıda geçerli bir oda kodu yok. Seni davet eden kişiden kodu tekrar iste.</p>
+
+<section><h2>Uygulama sende yok mu?</h2><div class="actions"><a class="button" href="https://apps.apple.com/app/movieforus/id6811587180">App Store’dan indir</a></div>
+<p>Android sürümü yakında Google Play’de.</p>
+<ol><li>MovieForUs’u indir ve aç.</li><li>Profil sekmesinde “Oda kur veya katıl”a dokun.</li><li>Yukarıdaki kodu yaz ve “Katıl”a dokun.</li></ol></section>
+
+<script>
+(function () {
+  var code = (new URLSearchParams(location.search).get('code') || '').toUpperCase();
+  if (!/^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{6}$/.test(code)) code = '';
+  var shown = document.getElementById('room-code');
+  var open = document.getElementById('open-room');
+  if (code) {
+    shown.textContent = code;
+    open.href = 'movieforus://room/' + code;
+  } else {
+    document.getElementById('with-code').hidden = true;
+    document.getElementById('no-code').hidden = false;
+  }
+})();
+</script>
+
+</main>
+<footer>
+  <a class="tmdb" href="https://www.themoviedb.org/"><img src="tmdb-logo.svg" alt="TMDB"></a>
+  <p>This application uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.</p>
+  <p>Bu uygulama TMDB’yi ve TMDB API’lerini kullanır, ancak TMDB tarafından onaylanmış, sertifikalandırılmış ya da başka bir şekilde desteklenmiş değildir.</p>
+  <p>© 2026 MovieForUs</p>
+</footer>
+</body>
+</html>
