@@ -22,7 +22,7 @@ const CONFIG = {
     tr: 'MovieForUs uygulamasının geliştiricisi',
     en: 'the developer of the MovieForUs app',
   },
-  email: 'movieforus.destek@gmail.com',
+  email: 'support@movieforus.com',
   // Where the Supabase project runs. Established from the database host's
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
