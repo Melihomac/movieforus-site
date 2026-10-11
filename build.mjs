@@ -15,6 +15,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { anchors, getLabel, homeOf, landingBody } from './landing.mjs';
+
 const CONFIG = {
   // Who is responsible for the data (KVKK "veri sorumlusu"). Named by role
   // rather than by the developer's own name, at the developer's request.
@@ -45,6 +47,9 @@ const TermsVersion = fs
   .readFileSync(path.join(app, 'src/constants/legal.ts'), 'utf8')
   .match(/TermsVersion = '([^']+)'/)[1];
 const terms = { tr: tr.terms.sections, en: en.terms.sections };
+// The fan clubs, by name in each language, for the landing page.
+const { FanClubs } = await import(path.join(app, 'src/constants/fan-clubs.ts'));
+const clubNames = { tr: FanClubs.map((c) => c.name.tr), en: FanClubs.map((c) => c.name.en) };
 
 /* ------------------------------------------------------------------ */
 /* helpers                                                             */
@@ -86,16 +91,24 @@ const twin = {
   'join.html': 'katil.html',
 };
 
-function page({ file, lang = 'tr', title, description, body }) {
-  const links =
-    lang === 'tr'
+function page({ file, lang = 'tr', title, description, body, home = false }) {
+  // The landing page links to its own sections; every other page to the
+  // other pages.
+  const links = home
+    ? anchors(lang)
+    : lang === 'tr'
       ? `<a href="./">Ana sayfa</a><a href="gizlilik.html">Gizlilik</a><a href="sartlar.html">Şartlar</a><a href="destek.html">Destek</a>`
       : `<a href="en.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="support.html">Support</a>`;
   // Labelled in the language it leads to, as language switches are.
   const other = `<a class="lang" href="${twin[file]}" hreflang="${lang === 'tr' ? 'en' : 'tr'}">${
-    lang === 'tr' ? 'English' : 'Türkçe'
+    lang === 'tr' ? 'EN' : 'TR'
   }</a>`;
-  const nav = links + other;
+  const footLinks =
+    lang === 'tr'
+      ? [['gizlilik.html', 'Gizlilik Politikası'], ['sartlar.html', 'Kullanım Şartları'], ['destek.html', 'Destek'],
+         ['hesap-silme.html', 'Hesap silme'], ['cocuk-guvenligi.html', 'Çocuk güvenliği'], ['en.html', 'English']]
+      : [['privacy.html', 'Privacy Policy'], ['terms.html', 'Terms of Use'], ['support.html', 'Support'],
+         ['delete-account.html', 'Delete your account'], ['child-safety.html', 'Child safety'], ['./', 'Türkçe']];
   const html = `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -103,21 +116,38 @@ function page({ file, lang = 'tr', title, description, body }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escape(title)}</title>
 <meta name="description" content="${escape(description)}">
+<meta name="theme-color" content="#050506">
+<meta property="og:title" content="${escape(title)}">
+<meta property="og:description" content="${escape(description)}">
+<link rel="icon" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
 <link rel="alternate" hreflang="${lang === 'tr' ? 'en' : 'tr'}" href="${twin[file]}">
 <link rel="alternate" hreflang="${lang}" href="${file}">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top"><a class="brand" href="./">${wordmark}</a><nav>${nav}</nav></header>
-<main>
+<header class="top"><div class="top-in">
+  <a class="brand" href="${homeOf(lang)}"><img src="logo.png" alt="" width="30" height="30">${wordmark}</a>
+  <nav class="top-links${home ? ' sections' : ''}">${links}</nav>
+  <div class="top-right">${other}<a class="get" href="${CONFIG.appStore}">${getLabel(lang)} →</a></div>
+</div></header>
+<main class="${home ? 'home' : 'doc'}">
 ${body}
 </main>
-<footer>
-  <a class="tmdb" href="https://www.themoviedb.org/"><img src="tmdb-logo.svg" alt="TMDB"></a>
-  <p>This application uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.</p>
-  ${lang === 'tr' ? '<p>Bu uygulama TMDB’yi ve TMDB API’lerini kullanır, ancak TMDB tarafından onaylanmış, sertifikalandırılmış ya da başka bir şekilde desteklenmiş değildir.</p>' : ''}
-  <p>© ${new Date().getFullYear()} MovieForUs</p>
-</footer>
+<footer class="foot"><div class="foot-in">
+  <div class="foot-brand">
+    <a class="brand" href="${homeOf(lang)}"><img src="logo.png" alt="" width="30" height="30">${wordmark}</a>
+    <p>${lang === 'tr' ? 'Film zevkine göre tanışma uygulaması.' : 'A dating app built on taste in films.'}</p>
+    <p><a href="mailto:${CONFIG.email}">${CONFIG.email}</a></p>
+  </div>
+  <nav class="foot-links">${footLinks.map(([href, label]) => `<a href="${href}">${label}</a>`).join('')}</nav>
+  <div class="foot-legal">
+    <a class="tmdb" href="https://www.themoviedb.org/"><img src="tmdb-logo.svg" alt="TMDB"></a>
+    <p>This application uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.</p>
+    ${lang === 'tr' ? '<p>Bu uygulama TMDB’yi ve TMDB API’lerini kullanır, ancak TMDB tarafından onaylanmış, sertifikalandırılmış ya da başka bir şekilde desteklenmiş değildir.</p>' : ''}
+    <p>© ${new Date().getFullYear()} MovieForUs</p>
+  </div>
+</div></footer>
 </body>
 </html>
 `;
@@ -135,63 +165,19 @@ const list = (items) => `<ul>${items.map((item) => `<li>${fill(item)}</li>`).joi
 
 page({
   file: 'index.html',
-  title: 'MovieForUs — Film zevkin tutan biriyle tanış',
-  description: 'MovieForUs film zevkine göre eşleştiren bir tanışma uygulamasıdır.',
-  body: `
-<section class="hero">
-  <h1>${wordmark}</h1>
-  <p class="lead">Film zevkin tutan biriyle tanış.</p>
-  <p>Film kaydır, beğendiklerin ve geçtiklerin üzerinden zevkin ortaya çıksın. Aynı filmlerde seninle anlaşan, 300 km içindeki kişilerle eşleş; sohbet et, ardından birlikte izleyeceğiniz filmi birlikte seçin.</p>
-  <p class="store">
-    <!-- Apple's own badge, unmodified and at its own proportions, as its
-         marketing guidelines require. The black badge carries its own
-         background, so it reads on the dark page and on the light one. Served from this site so the page does not
-         call out to Apple for it. -->
-    <a class="store-badge" href="${CONFIG.appStore}">
-      <img src="app-store-badge-tr.svg" alt="App Store’dan İndirin" width="151" height="40">
-    </a>
-  </p>
-  <p class="muted">iPhone için ücretsiz. 18 yaş ve üzeri.</p>
-</section>
-<section class="cards">
-  <div class="card"><h3>Film kaydır</h3><p>Herkesin gördüğü ortak filmler ve sana özel öneriler. Günde 30 kart.</p></div>
-  <div class="card"><h3>Eşleş</h3><p>En az 8 ortak filmde anlaştığın kişiler sana önerilir.</p></div>
-  <div class="card"><h3>Birlikte seç</h3><p>Eşleştiğin kişiyle aynı filmleri kaydırın, ikinizin de beğendiği film ortaya çıksın.</p></div>
-</section>
-<section class="links">
-  <a href="${CONFIG.appStore}">App Store</a> · <a href="gizlilik.html">Gizlilik Politikası</a> · <a href="sartlar.html">Kullanım Şartları</a> · <a href="destek.html">Destek</a> · <a href="en.html">English</a>
-</section>`,
+  home: true,
+  title: 'MovieForUs — Aynı filmleri seven biriyle tanış',
+  description: 'MovieForUs film zevkine göre eşleştiren bir tanışma uygulamasıdır: insanları değil filmleri kaydır, aynı filmleri seven kişilerle eşleş.',
+  body: landingBody('tr', { ...CONFIG, clubs: clubNames.tr, escape }),
 });
-
-/* ------------------------------------------------------------------ */
-/* landing page — English                                              */
-/* ------------------------------------------------------------------ */
 
 page({
   file: 'en.html',
   lang: 'en',
-  title: 'MovieForUs — Meet someone with your taste in films',
-  description: 'MovieForUs is a dating app that matches people on their taste in films.',
-  body: `
-<section class="hero">
-  <h1>${wordmark}</h1>
-  <p class="lead">Meet someone with your taste in films.</p>
-  <p>Swipe through films and let your taste show in what you keep and what you pass on. Match with people within 300 km who agree with you on the same films; talk, then pick what to watch together, together.</p>
-  <p class="store">
-    <a class="store-badge" href="${CONFIG.appStore}">
-      <img src="app-store-badge-tr.svg" alt="Download on the App Store" width="151" height="40">
-    </a>
-  </p>
-  <p class="muted">Free for iPhone. 18 and over.</p>
-</section>
-<section class="cards">
-  <div class="card"><h3>Swipe films</h3><p>Films everybody sees, and recommendations made for you. 30 cards a day.</p></div>
-  <div class="card"><h3>Match</h3><p>People who agreed with you on at least 8 of the same films — or liked 5 of the same ones.</p></div>
-  <div class="card"><h3>Choose together</h3><p>Swipe the same films with the person you matched with, and the one you both like surfaces.</p></div>
-</section>
-<section class="links">
-  <a href="${CONFIG.appStore}">App Store</a> · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a> · <a href="support.html">Support</a> · <a href="./">Türkçe</a>
-</section>`,
+  home: true,
+  title: 'MovieForUs — Meet someone who loves your films',
+  description: 'MovieForUs is a dating app that matches people on their taste in films: swipe films, not people, and match with people who love the same ones.',
+  body: landingBody('en', { ...CONFIG, clubs: clubNames.en, escape }),
 });
 
 /* ------------------------------------------------------------------ */
@@ -506,61 +492,286 @@ ${section('Is this an emergency?',
 /* stylesheet                                                          */
 /* ------------------------------------------------------------------ */
 
-fs.writeFileSync(new URL('style.css', import.meta.url), `:root {
-  --bg: #0a0a0c; --surface: #16161a; --border: #2a2a30;
-  --text: #f2f2f7; --muted: #9a9aa3; --primary: #ff375f;
+fs.writeFileSync(new URL('style.css', import.meta.url), `/* Dark only, like the app: near-black, the app's pink-red, and red light
+   behind the headings. No web fonts, so the site calls out to nobody. */
+:root {
+  --bg: #050506; --surface: #111114; --surface-2: #17171b; --border: rgba(255,255,255,.08);
+  --text: #f4f4f7; --muted: #9c9ca6; --primary: #ff375f; --primary-2: #ff7a59;
+  --glow: rgba(255,55,95,.16);
   color-scheme: dark;
 }
-@media (prefers-color-scheme: light) {
-  :root { --bg: #fafafa; --surface: #ffffff; --border: #e4e4e8; --text: #151518; --muted: #6b6b73; color-scheme: light; }
-}
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text);
-  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased;
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
 a { color: var(--primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-  max-width: 820px; margin: 0 auto; padding: 20px 24px; }
-.top nav { display: flex; gap: 18px; font-size: 15px; }
-.top nav a { color: var(--muted); }
-/* The language switch reads as a control rather than another page. */
-.top nav a.lang { color: var(--text); border: 1px solid var(--border); border-radius: 999px;
-  padding: 2px 10px; font-size: 14px; }
-.brand { color: var(--text); font-size: 20px; }
+img { max-width: 100%; }
+h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.025em; }
+
+/* header */
+.top { position: sticky; top: 0; z-index: 50; background: rgba(5,5,6,.72);
+  -webkit-backdrop-filter: saturate(160%) blur(16px); backdrop-filter: saturate(160%) blur(16px);
+  border-bottom: 1px solid var(--border); }
+.top-in { max-width: 1180px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-size: 19px; }
+.brand:hover { text-decoration: none; }
+.brand img { width: 30px; height: 30px; border-radius: 8px; }
 .wordmark { font-weight: 800; letter-spacing: -0.02em; }
 .for { color: var(--primary); }
-main { max-width: 820px; margin: 0 auto; padding: 8px 24px 48px; }
-h1 { font-size: 34px; line-height: 1.15; margin: 24px 0 8px; letter-spacing: -0.02em; }
-h2 { font-size: 20px; margin: 36px 0 8px; }
+.top-links { display: flex; gap: 22px; font-size: 14px; flex: 1; justify-content: center; }
+.top-links a { color: var(--muted); }
+.top-links a:hover { color: var(--text); text-decoration: none; }
+.top-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.lang { color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px;
+  font-size: 13px; font-weight: 600; background: rgba(255,255,255,.03); }
+.lang:hover { text-decoration: none; border-color: rgba(255,255,255,.2); }
+.get { background: var(--primary); color: #fff; border-radius: 999px; padding: 8px 16px; font-size: 14px;
+  font-weight: 700; white-space: nowrap; box-shadow: 0 6px 24px rgba(255,55,95,.35); }
+.get:hover { text-decoration: none; filter: brightness(1.08); }
+@media (max-width: 980px) { .top-links.sections { display: none; } }
+@media (max-width: 640px) {
+  .top-in { flex-wrap: wrap; gap: 10px 16px; padding: 10px 16px; }
+  .top-links { order: 3; flex-basis: 100%; justify-content: flex-start; gap: 16px; overflow-x: auto; }
+  .get { padding: 7px 12px; font-size: 13px; }
+}
+
+/* text pages */
+main.doc { max-width: 820px; margin: 0 auto; padding: 24px 24px 64px; }
+main.doc h1 { font-size: 40px; line-height: 1.12; margin: 32px 0 10px; font-weight: 800; }
+main.doc h2 { font-size: 21px; margin: 40px 0 8px; }
 h3 { margin: 0 0 6px; font-size: 17px; }
 p, li { color: var(--text); }
-.muted, footer { color: var(--muted); font-size: 14px; }
-ul { padding-left: 22px; }
+.muted { color: var(--muted); font-size: 14px; }
+ul, ol { padding-left: 22px; }
 li { margin: 6px 0; }
 mark { background: #ffd60a; color: #000; padding: 0 4px; border-radius: 4px; }
-.hero h1 { font-size: 52px; margin-top: 48px; }
-.lead { font-size: 22px; margin: 0 0 12px; }
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 36px 0; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
-.card p { margin: 0; color: var(--muted); font-size: 15px; }
-.store { margin: 28px 0 8px; }
-/* Apple asks for clear space around the badge and a minimum height. */
-.store-badge { display: inline-block; padding: 6px; }
-.store-badge:hover { opacity: .85; }
-.store-badge img { height: 52px; width: auto; display: block; }
-.links { margin-top: 24px; }
-footer { max-width: 820px; margin: 0 auto; padding: 24px; border-top: 1px solid var(--border); }
-footer p { color: var(--muted); margin: 6px 0; }
-/* TMDB's terms: its mark, smaller than MovieForUs's own. */
-.tmdb img { height: 14px; width: auto; display: block; margin-bottom: 8px; }
 /* The room invitation page. */
 .room-code { font-size: 44px; font-weight: 800; letter-spacing: 0.18em; margin: 8px 0 20px; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 20px; }
 .button { display: inline-block; padding: 14px 22px; border-radius: 999px; font-weight: 700;
-  border: 1px solid var(--border); color: var(--text); }
+  border: 1px solid var(--border); color: var(--text); background: var(--surface); }
 .button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
-.button:hover { opacity: .88; }
-ol { padding-left: 22px; }
+.button:hover { opacity: .88; text-decoration: none; }
+
+/* footer */
+.foot { border-top: 1px solid var(--border); background: #08080a; }
+.foot-in { max-width: 1180px; margin: 0 auto; padding: 40px 24px 32px; display: grid; gap: 28px 48px;
+  grid-template-columns: 1.1fr 1fr; }
+.foot p { color: var(--muted); font-size: 13px; margin: 6px 0; }
+.foot-brand p { font-size: 14px; }
+.foot-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; align-content: start; font-size: 14px; }
+.foot-links a { color: var(--muted); }
+.foot-links a:hover { color: var(--text); }
+.foot-legal { grid-column: 1 / -1; border-top: 1px solid var(--border); padding-top: 20px; }
+/* TMDB's terms: its mark, smaller than MovieForUs's own. */
+.tmdb img { height: 14px; width: auto; display: block; margin-bottom: 8px; }
+@media (max-width: 640px) { .foot-in { grid-template-columns: 1fr; } }
+
+/* landing page */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+.eyebrow { margin: 0 0 12px; color: var(--primary); font-size: 12px; font-weight: 800; letter-spacing: .16em;
+  text-transform: uppercase; }
+.eyebrow.pill { display: inline-block; padding: 6px 14px; border-radius: 999px; letter-spacing: .08em;
+  border: 1px solid rgba(255,55,95,.35); background: rgba(255,55,95,.08); }
+.hero { position: relative; overflow: hidden; padding: 72px 0 88px;
+  background: radial-gradient(60% 70% at 78% 30%, rgba(255,55,95,.22), transparent 70%),
+              radial-gradient(40% 50% at 10% 0%, rgba(255,122,89,.10), transparent 70%); }
+.hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 40px; align-items: center; }
+.hero h1 { font-size: clamp(42px, 6.4vw, 78px); line-height: 1.02; margin: 18px 0 20px; font-weight: 900; letter-spacing: -0.035em; }
+.hero h1 em, .section-head h2 em { font-style: normal; background: linear-gradient(90deg, var(--primary), var(--primary-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero-lead { font-size: 19px; color: #c9c9d1; max-width: 560px; margin: 0 0 28px; }
+.stores { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+/* Apple asks for clear space around the badge and a minimum height. */
+.store-badge { display: inline-block; padding: 4px; }
+.store-badge:hover { opacity: .85; }
+.store-badge img { height: 52px; width: auto; display: block; }
+.pill-button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px;
+  border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; }
+.pill-button:hover { text-decoration: none; border-color: rgba(255,255,255,.2); }
+.pill-button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.pill-button.soon { color: var(--muted); cursor: default; }
+.pill-button.small { min-height: 36px; padding: 0 16px; font-size: 13px; }
+.note { color: var(--muted); font-size: 14px; margin: 14px 0 0; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 40px 0 0; max-width: 600px; }
+.stats div { border-left: 2px solid rgba(255,55,95,.5); padding: 2px 0 2px 14px; }
+.stats dt { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.stats dd { margin: 2px 0 0; color: var(--muted); font-size: 13px; line-height: 1.35; }
+.hero-art { position: relative; height: 640px; }
+.phone { width: 290px; padding: 9px; border-radius: 46px; background: linear-gradient(160deg, #2a2a30, #0d0d10 40%);
+  border: 1px solid rgba(255,255,255,.12); box-shadow: 0 40px 100px rgba(0,0,0,.6), 0 0 80px rgba(255,55,95,.18); }
+.phone img { display: block; width: 100%; height: auto; border-radius: 38px; }
+.hero-art .phone { position: absolute; }
+.phone-front { right: 40px; top: 10px; z-index: 2; }
+.phone-back { right: 250px; top: 70px; transform: rotate(-8deg) scale(.86); opacity: .55; filter: saturate(.8); }
+.float-chip { position: absolute; z-index: 3; left: 30px; bottom: 70px; display: flex; gap: 12px; align-items: center;
+  padding: 12px 16px; border-radius: 18px; background: rgba(23,23,27,.86); border: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+.float-chip strong { display: block; font-size: 14px; }
+.float-chip small { color: var(--muted); font-size: 12px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 5px rgba(255,55,95,.2); }
+@media (max-width: 900px) {
+  .hero { padding: 40px 0 56px; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-art { height: 560px; max-width: 420px; width: 100%; margin: 0 auto; }
+  .phone-front { right: 0; }
+  .phone-back { right: auto; left: -40px; }
+  .float-chip { left: 0; bottom: 40px; }
+}
+@media (max-width: 560px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+  .hero-art { height: 500px; }
+  .hero-art .phone { width: 240px; }
+  .phone-back { display: none; }
+  .phone-front { right: 50%; transform: translateX(50%); }
+  .float-chip { bottom: 24px; }
+}
+
+.band { padding: 96px 0; border-top: 1px solid var(--border); position: relative; }
+.band.glow { background: radial-gradient(50% 60% at 50% 0%, var(--glow), transparent 75%); }
+.section-head { max-width: 640px; margin-bottom: 44px; }
+.section-head.centred { margin-left: auto; margin-right: auto; text-align: center; }
+.section-head h2, .cta h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.06; margin: 0 0 16px; font-weight: 800; }
+.section-lead { color: #b9b9c3; font-size: 18px; margin: 0; }
+.feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.feature { background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--border);
+  border-radius: 24px; padding: 28px; }
+.feature h3 { font-size: 21px; margin-bottom: 8px; }
+.feature p { color: var(--muted); margin: 0; }
+.feature .eyebrow { margin-bottom: 6px; }
+.feature-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; margin-bottom: 22px;
+  background: rgba(255,55,95,.12); border: 1px solid rgba(255,55,95,.3); color: var(--primary); font-size: 22px; font-weight: 800; }
+.icon-0::before { content: "⇄"; }
+.icon-1::before { content: "♥"; }
+.icon-2::before { content: "★"; }
+@media (max-width: 860px) { .feature-grid { grid-template-columns: 1fr; } }
+
+/* the deck */
+.demo { display: flex; flex-direction: column; align-items: center; gap: 26px; }
+.deck { position: relative; width: min(340px, 100%); height: 480px; outline: none; touch-action: pan-y; }
+.deck:focus-visible { outline: 2px solid var(--primary); outline-offset: 8px; border-radius: 28px; }
+.film { position: absolute; inset: 0; border-radius: 28px; overflow: hidden; background: var(--surface);
+  border: 1px solid rgba(255,255,255,.1); box-shadow: 0 30px 70px rgba(0,0,0,.55); cursor: grab; user-select: none;
+  -webkit-user-select: none; display: flex; flex-direction: column; }
+.film:active { cursor: grabbing; }
+.film .art { flex: 1; }
+.film-text { padding: 18px 22px 22px; background: linear-gradient(180deg, rgba(17,17,20,0), var(--surface) 30%); margin-top: -40px; position: relative; }
+.film-text h3 { font-size: 24px; margin: 0 0 6px; }
+.film-text p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+.film-text .film-meta { color: var(--primary); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+.stamp { position: absolute; top: 28px; z-index: 2; padding: 4px 12px; border: 3px solid; border-radius: 10px;
+  font-weight: 900; font-size: 22px; letter-spacing: .08em; opacity: 0; transition: opacity .15s; }
+.stamp-like { left: 22px; color: var(--primary); transform: rotate(-12deg); }
+.stamp-pass { right: 22px; color: #8e8e93; transform: rotate(12deg); }
+.stamp-love { left: 50%; top: 40%; transform: translate(-50%, -50%); border: 0; font-size: 90px; color: var(--primary);
+  text-shadow: 0 10px 40px rgba(255,55,95,.6); }
+.show-like .stamp-like, .show-pass .stamp-pass, .show-love .stamp-love, .show-love .stamp-like { opacity: 1; }
+.deck-result { position: absolute; inset: 0; border-radius: 28px; padding: 32px; display: flex; flex-direction: column;
+  justify-content: center; text-align: center; background: radial-gradient(80% 60% at 50% 0%, rgba(255,55,95,.25), var(--surface) 70%);
+  border: 1px solid rgba(255,55,95,.3); }
+.deck-result[hidden] { display: none; }
+.deck-result h3 { font-size: 30px; margin-bottom: 10px; }
+.deck-result p { color: #c9c9d1; }
+.deck-result b { color: var(--primary); }
+.deck-result-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px; }
+.deck-controls { display: flex; gap: 18px; align-items: center; }
+.round { width: 62px; height: 62px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface-2);
+  color: var(--text); font-size: 24px; cursor: pointer; display: grid; place-items: center; transition: transform .15s; }
+.round:hover:not(:disabled) { transform: scale(1.06); }
+.round:disabled { opacity: .35; cursor: default; }
+.round.love { width: 52px; height: 52px; font-size: 20px; color: var(--primary); }
+.round.like { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 10px 30px rgba(255,55,95,.4); }
+
+/* made-up film art, drawn rather than taken from any film */
+.art { position: relative; overflow: hidden; }
+.art .sun { position: absolute; left: 50%; width: 120px; height: 120px; border-radius: 50%; transform: translateX(-50%); }
+.art .hills { position: absolute; left: -10%; right: -10%; bottom: 0; height: 38%; border-radius: 50% 50% 0 0 / 40% 40% 0 0; }
+.art-lisbon { background: radial-gradient(1.5px 1.5px at 20% 20%, #fff, transparent), radial-gradient(1px 1px at 70% 12%, #fff, transparent),
+  radial-gradient(1.5px 1.5px at 85% 30%, #fff, transparent), radial-gradient(1px 1px at 40% 8%, #fff, transparent),
+  linear-gradient(180deg, #141a4a 0%, #4b2c7a 55%, #e0567f 100%); }
+.art-lisbon .sun { top: 22%; width: 80px; height: 80px; background: #ffe9c8; box-shadow: 0 0 60px rgba(255,233,200,.6); }
+.art-lisbon .hills { background: #1c1430; }
+.art-juniper { background: linear-gradient(180deg, #f2b46b 0%, #c96a3c 55%, #5b2a24 100%); }
+.art-juniper .sun { top: 30%; background: #fff1cf; box-shadow: 0 0 70px rgba(255,241,207,.7); }
+.art-juniper .hills { background: #3a1d1d; height: 32%; }
+.art-summer { background: linear-gradient(180deg, #ff9a6b 0%, #ff4f6e 50%, #6b1d4a 100%); }
+.art-summer .sun { top: 36%; background: #ffe3a3; box-shadow: 0 0 80px rgba(255,227,163,.8); }
+.art-summer .hills { background: #2c0f25; }
+.art.mini { width: 64px; height: 84px; border-radius: 12px; flex: none; }
+.art.mini .sun { width: 26px; height: 26px; top: 30%; }
+
+/* split sections */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.split.reverse > :first-child { order: 2; }
+.split-art { position: relative; display: flex; justify-content: center; }
+.split-art .phone { width: 280px; }
+.ways { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.ways li { display: flex; gap: 16px; padding: 18px 20px; margin: 0; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); }
+.ways h3 { margin: 0 0 2px; font-size: 17px; }
+.ways p { margin: 0; color: var(--muted); font-size: 15px; }
+.way-num { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(255,55,95,.14); color: var(--primary); font-weight: 800; }
+.match-card { position: absolute; left: 0; bottom: 40px; width: 230px; padding: 20px; border-radius: 22px; text-align: center;
+  background: rgba(23,23,27,.9); border: 1px solid rgba(255,55,95,.35); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 60px rgba(255,55,95,.2); }
+.match-card .eyebrow { font-size: 10px; margin-bottom: 12px; }
+.match-card strong { display: block; font-size: 18px; }
+.match-card p { color: var(--muted); font-size: 13px; margin: 2px 0 14px; }
+.match-people { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 10px; }
+.avatar { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--surface); display: inline-block; }
+.a1 { background: radial-gradient(circle at 50% 38%, #2a1a14 22%, transparent 23%), radial-gradient(circle at 50% 100%, #2a1a14 45%, transparent 46%), linear-gradient(160deg, #f0a27a, #b4475a); }
+.a2 { background: radial-gradient(circle at 50% 38%, #121a2c 22%, transparent 23%), radial-gradient(circle at 50% 100%, #121a2c 45%, transparent 46%), linear-gradient(160deg, #7fb3d9, #3a4f8f); }
+.a3 { background: radial-gradient(circle at 50% 38%, #24132a 22%, transparent 23%), radial-gradient(circle at 50% 100%, #24132a 45%, transparent 46%), linear-gradient(160deg, #c79ae8, #6b3f8f); }
+.heart { color: var(--primary); font-size: 20px; }
+.count-pill { display: inline-block; margin: 0 0 16px; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 700;
+  background: rgba(255,55,95,.12); color: var(--primary); }
+.chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.chips li { margin: 0; padding: 7px 14px; border-radius: 999px; font-size: 14px; background: var(--surface); border: 1px solid var(--border); color: #d6d6dd; }
+.ticks { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.ticks li { margin: 0; padding-left: 30px; position: relative; color: #d6d6dd; }
+.ticks li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--primary); font-weight: 800; }
+.room-card { width: min(360px, 100%); padding: 28px; border-radius: 28px; background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--border); box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 80px rgba(255,55,95,.15); }
+.room-card-code { font-size: 44px; font-weight: 900; letter-spacing: .16em; margin: 0 0 18px; }
+.room-people { display: flex; align-items: center; margin-bottom: 22px; }
+.room-people .avatar { width: 40px; height: 40px; margin-right: -10px; }
+.room-people small { margin-left: 20px; color: var(--muted); }
+.room-match { display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: 18px; background: rgba(255,55,95,.08); border: 1px solid rgba(255,55,95,.3); }
+.room-match small { display: block; color: var(--primary); font-weight: 700; font-size: 12px; }
+.room-match strong { font-size: 17px; }
+@media (max-width: 900px) {
+  .split { grid-template-columns: 1fr; gap: 40px; }
+  .split.reverse > :first-child { order: 0; }
+  .match-card { left: 50%; transform: translateX(-130px); bottom: -20px; }
+}
+@media (max-width: 560px) {
+  .band { padding: 72px 0; }
+  .split-art .phone { width: 240px; }
+  .match-card { position: relative; left: auto; bottom: auto; transform: none; margin: -80px auto 0; }
+  .split-art:has(.match-card) { flex-direction: column; align-items: center; }
+}
+
+.safety-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.feature.small { padding: 24px; }
+.feature.small h3 { font-size: 18px; }
+.feature.small p { font-size: 15px; }
+.safety-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; margin-bottom: 18px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--border); font-weight: 800; font-size: 15px; color: var(--text); }
+.centred-link { text-align: center; margin: 32px 0 0; font-weight: 600; }
+@media (max-width: 980px) { .safety-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .safety-grid { grid-template-columns: 1fr; } }
+
+.cta { padding: 110px 0; border-top: 1px solid var(--border);
+  background: radial-gradient(60% 80% at 50% 100%, rgba(255,55,95,.25), transparent 70%); }
+.cta-in { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cta-logo { border-radius: 18px; margin-bottom: 26px; box-shadow: 0 0 60px rgba(255,55,95,.35); }
+.cta h2 { max-width: 760px; }
+.cta .section-lead { max-width: 560px; margin-bottom: 30px; }
+.cta .stores { justify-content: center; }
 `);
 
 
