@@ -23,7 +23,7 @@ const T = {
     eyebrow: 'Film zevkine göre tanışma uygulaması',
     title: 'Aynı filmleri seven <em>biriyle tanış.</em>',
     lead: 'İnsanları değil, filmleri kaydır. Aynı filmlerde seninle anlaşan, 300 km içindeki kişilerle eşleş; sohbet edin ve bu akşamın filmini birlikte seçin.',
-    badge: { src: 'app-store-badge-tr.svg', alt: 'App Store’dan İndirin' },
+    badge: { src: 'app-store-badge-tr.svg', alt: 'App Store’dan İndirin', width: 151 },
     play: 'Google Play · Yakında',
     note: 'iPhone için ücretsiz · 18 yaş ve üzeri',
     stats: [
@@ -118,7 +118,7 @@ const T = {
     eyebrow: 'A dating app built on taste in films',
     title: 'Meet someone who <em>loves your films.</em>',
     lead: 'Swipe films, not people. Match with people within 300 km who agree with you on the same films, then talk and pick tonight’s film together.',
-    badge: { src: 'app-store-badge-tr.svg', alt: 'Download on the App Store' },
+    badge: { src: 'app-store-badge-en.svg', alt: 'Download on the App Store', width: 120 },
     play: 'Google Play · Coming soon',
     note: 'Free for iPhone · 18 and over',
     stats: [
@@ -220,7 +220,7 @@ export function landingBody(lang, { appStore, playStore, clubs, escape }) {
   // call out to Apple for it.
   const stores = `
   <div class="stores">
-    <a class="store-badge" href="${appStore}"><img src="${t.badge.src}" alt="${t.badge.alt}" width="151" height="40"></a>
+    <a class="store-badge" href="${appStore}"><img src="${t.badge.src}" alt="${t.badge.alt}" width="${t.badge.width}" height="40"></a>
     ${playStore
       ? `<a class="pill-button" href="${playStore}">Google Play</a>`
       : `<span class="pill-button soon" aria-disabled="true">${t.play}</span>`}
