@@ -25,6 +25,8 @@ const CONFIG = {
     en: 'the developer of the MovieForUs app',
   },
   email: 'support@movieforus.com',
+  // The Instagram account for each language.
+  instagram: { tr: 'https://www.instagram.com/movieforusapp.tr/', en: 'https://www.instagram.com/movieforusapp/' },
   // Where the Supabase project runs. Established from the database host's
   // address against AWS's published ranges: eu-central-1.
   region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
@@ -109,6 +111,10 @@ function page({ file, lang = 'tr', title, description, body, home = false }) {
          ['hesap-silme.html', 'Hesap silme'], ['cocuk-guvenligi.html', 'Çocuk güvenliği'], ['en.html', 'English']]
       : [['privacy.html', 'Privacy Policy'], ['terms.html', 'Terms of Use'], ['support.html', 'Support'],
          ['delete-account.html', 'Delete your account'], ['child-safety.html', 'Child safety'], ['./', 'Türkçe']];
+  const insta = CONFIG.instagram[lang];
+  const handle = '@' + insta.replace(/\/$/, '').split('/').pop();
+  // A plain camera outline, drawn here rather than loaded from Instagram.
+  const instaIcon = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`;
   const html = `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -129,7 +135,7 @@ function page({ file, lang = 'tr', title, description, body, home = false }) {
 <header class="top"><div class="top-in">
   <a class="brand" href="${homeOf(lang)}"><img src="logo.png" alt="" width="30" height="30">${wordmark}</a>
   <nav class="top-links${home ? ' sections' : ''}">${links}</nav>
-  <div class="top-right">${other}<a class="get" href="${CONFIG.appStore}">${getLabel(lang)} →</a></div>
+  <div class="top-right">${other}<a class="insta" href="${insta}" aria-label="Instagram ${handle}">${instaIcon}</a><a class="get" href="${CONFIG.appStore}">${getLabel(lang)} →</a></div>
 </div></header>
 <main class="${home ? 'home' : 'doc'}">
 ${body}
@@ -139,6 +145,7 @@ ${body}
     <a class="brand" href="${homeOf(lang)}"><img src="logo.png" alt="" width="30" height="30">${wordmark}</a>
     <p>${lang === 'tr' ? 'Film zevkine göre tanışma uygulaması.' : 'A dating app built on taste in films.'}</p>
     <p><a href="mailto:${CONFIG.email}">${CONFIG.email}</a></p>
+    <p><a class="foot-insta" href="${insta}">${instaIcon}<span>Instagram ${handle}</span></a></p>
   </div>
   <nav class="foot-links">${footLinks.map(([href, label]) => `<a href="${href}">${label}</a>`).join('')}</nav>
   <div class="foot-legal">
@@ -528,6 +535,10 @@ h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "
 .lang { color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px;
   font-size: 13px; font-weight: 600; background: rgba(255,255,255,.03); }
 .lang:hover { text-decoration: none; border-color: rgba(255,255,255,.2); }
+.insta { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: var(--text);
+  border: 1px solid var(--border); background: rgba(255,255,255,.03); }
+.insta:hover { border-color: rgba(255,255,255,.2); }
+.foot-insta { display: inline-flex; align-items: center; gap: 8px; }
 .get { background: var(--primary); color: #fff; border-radius: 999px; padding: 8px 16px; font-size: 14px;
   font-weight: 700; white-space: nowrap; box-shadow: 0 6px 24px rgba(255,55,95,.35); }
 .get:hover { text-decoration: none; filter: brightness(1.08); }
