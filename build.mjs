@@ -69,6 +69,10 @@ const dateTR = (iso) =>
 const dateEN = (iso) =>
   new Date(`${iso}T12:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
+// The address Google and link previews should use for every page.
+const Site = 'https://movieforus.com/';
+const urlOf = (file) => (file === 'index.html' ? Site : Site + file);
+
 const wordmark = '<span class="wordmark">Movie<span class="for">For</span>Us</span>';
 
 /**
@@ -92,6 +96,48 @@ const twin = {
   'katil.html': 'join.html',
   'join.html': 'katil.html',
 };
+
+/**
+ * What the landing page tells search engines about itself: the site's name
+ * (shown above the result instead of the bare address), the organisation
+ * with its logo, and its accounts elsewhere.
+ */
+function structuredData(lang) {
+  const data = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': `${Site}#website`,
+        name: 'MovieForUs',
+        alternateName: ['Movie For Us', 'MFU'],
+        url: Site,
+        inLanguage: ['tr', 'en'],
+        publisher: { '@id': `${Site}#organization` },
+      },
+      {
+        '@type': 'Organization',
+        '@id': `${Site}#organization`,
+        name: 'MovieForUs',
+        url: Site,
+        logo: { '@type': 'ImageObject', url: `${Site}logo.png`, width: 192, height: 192 },
+        email: CONFIG.email,
+        sameAs: [CONFIG.instagram.en, CONFIG.instagram.tr, CONFIG.appStore],
+      },
+      {
+        '@type': 'MobileApplication',
+        name: 'MovieForUs',
+        operatingSystem: 'iOS',
+        applicationCategory: 'LifestyleApplication',
+        url: lang === 'tr' ? Site : `${Site}en.html`,
+        downloadUrl: CONFIG.appStore,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: lang === 'tr' ? 'TRY' : 'USD' },
+        publisher: { '@id': `${Site}#organization` },
+      },
+    ],
+  };
+  return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`;
+}
 
 function page({ file, lang = 'tr', title, description, body, home = false }) {
   // The landing page links to its own sections; every other page to the
@@ -123,12 +169,26 @@ function page({ file, lang = 'tr', title, description, body, home = false }) {
 <title>${escape(title)}</title>
 <meta name="description" content="${escape(description)}">
 <meta name="theme-color" content="#050506">
+<link rel="canonical" href="${urlOf(file)}">
+<link rel="alternate" hreflang="${lang}" href="${urlOf(file)}">
+<link rel="alternate" hreflang="${lang === 'tr' ? 'en' : 'tr'}" href="${urlOf(twin[file])}">
+<link rel="alternate" hreflang="x-default" href="${urlOf(lang === 'tr' ? file : twin[file])}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MovieForUs">
+<meta property="og:url" content="${urlOf(file)}">
 <meta property="og:title" content="${escape(title)}">
 <meta property="og:description" content="${escape(description)}">
-<link rel="icon" href="logo.png">
+<meta property="og:image" content="${Site}img/og-${lang}.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="628">
+<meta property="og:locale" content="${lang === 'tr' ? 'tr_TR' : 'en_US'}">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Google shows a site's icon only when it is square and a multiple of
+     48 px: logo.png is 192 px, favicon.ico carries 16, 32 and 48. -->
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="logo.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="logo.png">
-<link rel="alternate" hreflang="${lang === 'tr' ? 'en' : 'tr'}" href="${twin[file]}">
-<link rel="alternate" hreflang="${lang}" href="${file}">
+${home ? structuredData(lang) : ''}
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -876,6 +936,29 @@ ${roomScript}
 });
 
 /* ------------------------------------------------------------------ */
+
+/* ------------------------------------------------------------------ */
+/* for search engines                                                  */
+/* ------------------------------------------------------------------ */
+
+const Pages = Object.keys(twin);
+const TurkishPages = new Set(['index.html', 'gizlilik.html', 'sartlar.html', 'destek.html', 'hesap-silme.html', 'cocuk-guvenligi.html', 'katil.html']);
+const langOf = (file) => (TurkishPages.has(file) ? 'tr' : 'en');
+fs.writeFileSync(new URL('robots.txt', import.meta.url), `User-agent: *\nAllow: /\n\nSitemap: ${Site}sitemap.xml\n`);
+fs.writeFileSync(
+  new URL('sitemap.xml', import.meta.url),
+  `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${Pages.map(
+  (file) => `  <url>
+    <loc>${urlOf(file)}</loc>
+    <xhtml:link rel="alternate" hreflang="${langOf(file)}" href="${urlOf(file)}"/>
+    <xhtml:link rel="alternate" hreflang="${langOf(twin[file])}" href="${urlOf(twin[file])}"/>
+  </url>`
+).join('\n')}
+</urlset>
+`
+);
 
 const unfilled = Object.entries(CONFIG).filter(([, value]) => typeof value === 'string' && /^\[.*\]$/.test(value));
 console.log(

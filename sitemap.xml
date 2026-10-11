@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://movieforus.com/</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/en.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/en.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/en.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/gizlilik.html</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/gizlilik.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/privacy.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/privacy.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/gizlilik.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/sartlar.html</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/sartlar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/terms.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/terms.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/terms.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/sartlar.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/destek.html</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/destek.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/support.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/support.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/support.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/destek.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/hesap-silme.html</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/hesap-silme.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/delete-account.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/delete-account.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/delete-account.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/hesap-silme.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/cocuk-guvenligi.html</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/cocuk-guvenligi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/child-safety.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/child-safety.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/child-safety.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/cocuk-guvenligi.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/katil.html</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/katil.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/join.html"/>
+  </url>
+  <url>
+    <loc>https://movieforus.com/join.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://movieforus.com/join.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://movieforus.com/katil.html"/>
+  </url>
+</urlset>
