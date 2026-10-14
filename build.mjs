@@ -1,6 +1,7 @@
-// Builds the MovieForUs website, in Turkish and in English: a landing page,
-// the privacy policy, the terms of use and a support page, twice over, with a
-// link between each page and its twin.
+// Builds the MovieForUs website, in Turkish, English and (Latin American)
+// Spanish: a landing page, the privacy policy, the terms of use, a support
+// page and the rest, once in each language, each page linking to its versions
+// in the other two.
 //
 //   node --experimental-strip-types build.mjs
 //
@@ -23,13 +24,22 @@ const CONFIG = {
   controller: {
     tr: 'MovieForUs uygulamasının geliştiricisi',
     en: 'the developer of the MovieForUs app',
+    es: 'el desarrollador de la app MovieForUs',
   },
   email: 'support@movieforus.com',
-  // The Instagram account for each language.
-  instagram: { tr: 'https://www.instagram.com/movieforusapp.tr/', en: 'https://www.instagram.com/movieforusapp/' },
+  // The Instagram account for each language; Spanish has none of its own yet.
+  instagram: {
+    tr: 'https://www.instagram.com/movieforusapp.tr/',
+    en: 'https://www.instagram.com/movieforusapp/',
+    es: 'https://www.instagram.com/movieforusapp/',
+  },
   // Where the Supabase project runs. Established from the database host's
   // address against AWS's published ranges: eu-central-1.
-  region: { tr: 'Frankfurt, Almanya (Avrupa Birliği)', en: 'Frankfurt, Germany (European Union)' },
+  region: {
+    tr: 'Frankfurt, Almanya (Avrupa Birliği)',
+    en: 'Frankfurt, Germany (European Union)',
+    es: 'Fráncfort, Alemania (Unión Europea)',
+  },
   // Effective date of the privacy policy.
   effective: '2026-10-02',
   // The app's page on the App Store.
@@ -43,15 +53,16 @@ const CONFIG = {
 const app = path.join(process.env.HOME, 'Developer/MovieForUs');
 const { tr } = await import(path.join(app, 'src/i18n/tr.ts'));
 const { en } = await import(path.join(app, 'src/i18n/en.ts'));
+const { es } = await import(path.join(app, 'src/i18n/es.ts'));
 // Read rather than imported: legal.ts imports through the app's '@/' alias,
 // which node does not resolve, and the version is one line of it.
 const TermsVersion = fs
   .readFileSync(path.join(app, 'src/constants/legal.ts'), 'utf8')
   .match(/TermsVersion = '([^']+)'/)[1];
-const terms = { tr: tr.terms.sections, en: en.terms.sections };
+const terms = { tr: tr.terms.sections, en: en.terms.sections, es: es.terms.sections };
 // The fan clubs, by name in each language, for the landing page.
 const { FanClubs } = await import(path.join(app, 'src/constants/fan-clubs.ts'));
-const clubNames = { tr: FanClubs.map((c) => c.name.tr), en: FanClubs.map((c) => c.name.en) };
+const clubNames = Object.fromEntries(['tr', 'en', 'es'].map((l) => [l, FanClubs.map((c) => c.name[l])]));
 
 /* ------------------------------------------------------------------ */
 /* helpers                                                             */
@@ -68,6 +79,8 @@ const dateTR = (iso) =>
   new Date(`${iso}T12:00:00`).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 const dateEN = (iso) =>
   new Date(`${iso}T12:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const dateES = (iso) =>
+  new Date(`${iso}T12:00:00`).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
 
 // The address Google and link previews should use for every page.
 const Site = 'https://movieforus.com/';
@@ -76,26 +89,29 @@ const urlOf = (file) => (file === 'index.html' ? Site : Site + file);
 const wordmark = '<span class="wordmark">Movie<span class="for">For</span>Us</span>';
 
 /**
- * Every page and its twin in the other language. The switch in the header
- * lands on the same page rather than the front door, which is the difference
- * between changing language and losing your place.
+ * Every page in each language. The switch in the header lands on the same
+ * page rather than the front door, which is the difference between changing
+ * language and losing your place.
  */
-const twin = {
-  'index.html': 'en.html',
-  'en.html': 'index.html',
-  'gizlilik.html': 'privacy.html',
-  'privacy.html': 'gizlilik.html',
-  'sartlar.html': 'terms.html',
-  'terms.html': 'sartlar.html',
-  'destek.html': 'support.html',
-  'support.html': 'destek.html',
-  'hesap-silme.html': 'delete-account.html',
-  'delete-account.html': 'hesap-silme.html',
-  'cocuk-guvenligi.html': 'child-safety.html',
-  'child-safety.html': 'cocuk-guvenligi.html',
-  'katil.html': 'join.html',
-  'join.html': 'katil.html',
-};
+const Languages = ['tr', 'en', 'es'];
+const Versions = [
+  { tr: 'index.html', en: 'en.html', es: 'es.html' },
+  { tr: 'gizlilik.html', en: 'privacy.html', es: 'privacidad.html' },
+  { tr: 'sartlar.html', en: 'terms.html', es: 'terminos.html' },
+  { tr: 'destek.html', en: 'support.html', es: 'soporte.html' },
+  { tr: 'hesap-silme.html', en: 'delete-account.html', es: 'eliminar-cuenta.html' },
+  { tr: 'cocuk-guvenligi.html', en: 'child-safety.html', es: 'seguridad-infantil.html' },
+  { tr: 'katil.html', en: 'join.html', es: 'unirse.html' },
+];
+const versionsOf = (file) => Versions.find((v) => Object.values(v).includes(file));
+const langOf = (file) => Languages.find((l) => versionsOf(file)[l] === file);
+// Each language named in itself, as language switches are.
+const LanguageName = { tr: 'Türkçe', en: 'English', es: 'Español' };
+/** Links to the page's versions in the other languages, for under a title. */
+const also = (file) =>
+  Languages.filter((l) => l !== langOf(file))
+    .map((l) => `<a href="${versionsOf(file)[l]}" hreflang="${l}">${LanguageName[l]}</a>`)
+    .join(' · ');
 
 /**
  * What the landing page tells search engines about itself: the site's name
@@ -112,7 +128,7 @@ function structuredData(lang) {
         name: 'MovieForUs',
         alternateName: ['Movie For Us', 'MFU'],
         url: Site,
-        inLanguage: ['tr', 'en'],
+        inLanguage: Languages,
         publisher: { '@id': `${Site}#organization` },
       },
       {
@@ -129,7 +145,7 @@ function structuredData(lang) {
         name: 'MovieForUs',
         operatingSystem: 'iOS',
         applicationCategory: 'LifestyleApplication',
-        url: lang === 'tr' ? Site : `${Site}en.html`,
+        url: urlOf(Versions[0][lang]),
         downloadUrl: CONFIG.appStore,
         offers: { '@type': 'Offer', price: '0', priceCurrency: lang === 'tr' ? 'TRY' : 'USD' },
         publisher: { '@id': `${Site}#organization` },
@@ -144,19 +160,27 @@ function page({ file, lang = 'tr', title, description, body, home = false }) {
   // other pages.
   const links = home
     ? anchors(lang)
-    : lang === 'tr'
-      ? `<a href="./">Ana sayfa</a><a href="gizlilik.html">Gizlilik</a><a href="sartlar.html">Şartlar</a><a href="destek.html">Destek</a>`
-      : `<a href="en.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="support.html">Support</a>`;
-  // Labelled in the language it leads to, as language switches are.
-  const other = `<a class="lang" href="${twin[file]}" hreflang="${lang === 'tr' ? 'en' : 'tr'}">${
-    lang === 'tr' ? 'EN' : 'TR'
-  }</a>`;
-  const footLinks =
-    lang === 'tr'
-      ? [['gizlilik.html', 'Gizlilik Politikası'], ['sartlar.html', 'Kullanım Şartları'], ['destek.html', 'Destek'],
-         ['hesap-silme.html', 'Hesap silme'], ['cocuk-guvenligi.html', 'Çocuk güvenliği'], ['en.html', 'English']]
-      : [['privacy.html', 'Privacy Policy'], ['terms.html', 'Terms of Use'], ['support.html', 'Support'],
-         ['delete-account.html', 'Delete your account'], ['child-safety.html', 'Child safety'], ['./', 'Türkçe']];
+    : {
+        tr: `<a href="./">Ana sayfa</a><a href="gizlilik.html">Gizlilik</a><a href="sartlar.html">Şartlar</a><a href="destek.html">Destek</a>`,
+        en: `<a href="en.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="support.html">Support</a>`,
+        es: `<a href="es.html">Inicio</a><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos</a><a href="soporte.html">Soporte</a>`,
+      }[lang];
+  // The other two languages, each labelled in the language it leads to.
+  const others = Languages.filter((l) => l !== lang);
+  const other = `<span class="lang">${others
+    .map((l) => `<a href="${versionsOf(file)[l]}" hreflang="${l}" lang="${l}" title="${LanguageName[l]}">${l.toUpperCase()}</a>`)
+    .join('')}</span>`;
+  const footLinks = [
+    ...{
+      tr: [['gizlilik.html', 'Gizlilik Politikası'], ['sartlar.html', 'Kullanım Şartları'], ['destek.html', 'Destek'],
+           ['hesap-silme.html', 'Hesap silme'], ['cocuk-guvenligi.html', 'Çocuk güvenliği']],
+      en: [['privacy.html', 'Privacy Policy'], ['terms.html', 'Terms of Use'], ['support.html', 'Support'],
+           ['delete-account.html', 'Delete your account'], ['child-safety.html', 'Child safety']],
+      es: [['privacidad.html', 'Política de privacidad'], ['terminos.html', 'Términos de uso'], ['soporte.html', 'Soporte'],
+           ['eliminar-cuenta.html', 'Eliminar tu cuenta'], ['seguridad-infantil.html', 'Seguridad infantil']],
+    }[lang],
+    ...others.map((l) => [l === 'tr' ? './' : Versions[0][l], LanguageName[l]]),
+  ];
   const insta = CONFIG.instagram[lang];
   const handle = '@' + insta.replace(/\/$/, '').split('/').pop();
   // A plain camera outline, drawn here rather than loaded from Instagram.
@@ -170,9 +194,8 @@ function page({ file, lang = 'tr', title, description, body, home = false }) {
 <meta name="description" content="${escape(description)}">
 <meta name="theme-color" content="#050506">
 <link rel="canonical" href="${urlOf(file)}">
-<link rel="alternate" hreflang="${lang}" href="${urlOf(file)}">
-<link rel="alternate" hreflang="${lang === 'tr' ? 'en' : 'tr'}" href="${urlOf(twin[file])}">
-<link rel="alternate" hreflang="x-default" href="${urlOf(lang === 'tr' ? file : twin[file])}">
+${Languages.map((l) => `<link rel="alternate" hreflang="${l}" href="${urlOf(versionsOf(file)[l])}">`).join('\n')}
+<link rel="alternate" hreflang="x-default" href="${urlOf(versionsOf(file).tr)}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MovieForUs">
 <meta property="og:url" content="${urlOf(file)}">
@@ -181,7 +204,7 @@ function page({ file, lang = 'tr', title, description, body, home = false }) {
 <meta property="og:image" content="${Site}img/og-${lang}.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="628">
-<meta property="og:locale" content="${lang === 'tr' ? 'tr_TR' : 'en_US'}">
+<meta property="og:locale" content="${{ tr: 'tr_TR', en: 'en_US', es: 'es_LA' }[lang]}">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google shows a site's icon only when it is square and a multiple of
      48 px: logo.png is 192 px, favicon.ico carries 16, 32 and 48. -->
@@ -203,7 +226,7 @@ ${body}
 <footer class="foot"><div class="foot-in">
   <div class="foot-brand">
     <a class="brand" href="${homeOf(lang)}"><img src="logo.png" alt="" width="30" height="30">${wordmark}</a>
-    <p>${lang === 'tr' ? 'Film zevkine göre tanışma uygulaması.' : 'A dating app built on taste in films.'}</p>
+    <p>${{ tr: 'Film zevkine göre tanışma uygulaması.', en: 'A dating app built on taste in films.', es: 'Una app de citas basada en tu gusto por el cine.' }[lang]}</p>
     <p><a href="mailto:${CONFIG.email}">${CONFIG.email}</a></p>
     <p><a class="foot-insta" href="${insta}">${instaIcon}<span>Instagram ${handle}</span></a></p>
   </div>
@@ -211,7 +234,11 @@ ${body}
   <div class="foot-legal">
     <a class="tmdb" href="https://www.themoviedb.org/"><img src="tmdb-logo.svg" alt="TMDB"></a>
     <p>This application uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.</p>
-    ${lang === 'tr' ? '<p>Bu uygulama TMDB’yi ve TMDB API’lerini kullanır, ancak TMDB tarafından onaylanmış, sertifikalandırılmış ya da başka bir şekilde desteklenmiş değildir.</p>' : ''}
+    ${{
+      tr: '<p>Bu uygulama TMDB’yi ve TMDB API’lerini kullanır, ancak TMDB tarafından onaylanmış, sertifikalandırılmış ya da başka bir şekilde desteklenmiş değildir.</p>',
+      en: '',
+      es: '<p>Esta aplicación usa TMDB y las API de TMDB, pero no está avalada, certificada ni aprobada de ninguna otra forma por TMDB.</p>',
+    }[lang]}
     <p>© ${new Date().getFullYear()} MovieForUs</p>
   </div>
 </div></footer>
@@ -257,7 +284,7 @@ page({
   description: 'MovieForUs uygulamasının kişisel verileri nasıl işlediği.',
   body: `
 <h1>Gizlilik Politikası</h1>
-<p class="muted">Yürürlük tarihi: ${dateTR(CONFIG.effective)} · <a href="privacy.html">English</a></p>
+<p class="muted">Yürürlük tarihi: ${dateTR(CONFIG.effective)} · ${also('gizlilik.html')}</p>
 <p>Bu metin, MovieForUs mobil uygulamasını kullanırken hangi kişisel verilerinin işlendiğini, neden işlendiğini, kimlerle paylaşıldığını ve 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamındaki haklarını açıklar.</p>
 
 ${section('1. Veri sorumlusu',
@@ -314,7 +341,7 @@ ${section('5. Hizmet sağlayıcılar ve yurt dışına aktarım',
 ${section('6. Ne kadar süre saklıyoruz',
   list([
     'Hesabın açık olduğu sürece verilerini saklarız.',
-    'Hesabını uygulama içinden (Profil → Hesap → Hesabımı sil) sildiğinde profilin, fotoğrafların ve kontrol kayıtları, film zevkin, izleme listen, film listelerin, kaydırmaların, eşleşmelerin, mesajların ve bildirim anahtarın hemen ve kalıcı olarak silinir.',
+    'Hesabını uygulama içinden (Profil → Ayarlar → Hesabı sil → Hesabımı sil) sildiğinde profilin, fotoğrafların ve kontrol kayıtları, film zevkin, izleme listen, film listelerin, kaydırmaların, eşleşmelerin, mesajların ve bildirim anahtarın hemen ve kalıcı olarak silinir.',
     `Kullanım analizi kayıtları Amplitude’da tutulur. Hesabını sildiğinde bu kayıtların silinmesi Amplitude’dan otomatik olarak istenir ve Amplitude silmeyi en geç 30 gün içinde tamamlar. Bir sorun olursa ${CONFIG.email} adresine yazabilirsin.`,
     'Topluluğun güvenliği için, bir kişi hakkında yapılan şikayet kayıtları o kişinin hesabı silindikten sonra en fazla 2 yıl saklanabilir.',
     'Servis sağlayıcılarımızın yedeklerinde ve teknik kayıtlarında kalan kopyalar, onların saklama döngüsü sonunda silinir.',
@@ -356,7 +383,7 @@ page({
   description: 'How the MovieForUs app handles personal data.',
   body: `
 <h1>Privacy Policy</h1>
-<p class="muted">Effective: ${dateEN(CONFIG.effective)} · <a href="gizlilik.html">Türkçe</a></p>
+<p class="muted">Effective: ${dateEN(CONFIG.effective)} · ${also('privacy.html')}</p>
 <p>This policy explains what personal data the MovieForUs mobile app processes, why, who it is shared with, and your rights. The Turkish version is authoritative for users in Türkiye.</p>
 
 ${section('1. Controller',
@@ -413,7 +440,7 @@ ${section('5. Service providers and international transfers',
 ${section('6. How long we keep it',
   list([
     'We keep your data for as long as your account exists.',
-    'When you delete your account in the app (Profile → Account → Delete my account), your profile, photos and their check records, film taste, watchlist, film lists, swipes, matches, messages and push token are deleted immediately and permanently.',
+    'When you delete your account in the app (Profile → Settings → Delete account → Delete my account), your profile, photos and their check records, film taste, watchlist, film lists, swipes, matches, messages and push token are deleted immediately and permanently.',
     `Usage analytics records are kept at Amplitude. When you delete your account, Amplitude is automatically asked to delete them and completes the deletion within 30 days. If anything goes wrong, write to ${CONFIG.email}.`,
     'For community safety, reports about a person may be kept for up to 2 years after that person’s account is deleted.',
     'Copies in our providers’ backups and technical logs are removed at the end of their retention cycles.',
@@ -468,7 +495,7 @@ page({
   description: 'MovieForUs kullanım şartları.',
   body: `
 <h1>Kullanım Şartları</h1>
-<p class="muted">Son güncelleme: ${dateTR(TermsVersion)} · <a href="terms.html">English</a></p>
+<p class="muted">Son güncelleme: ${dateTR(TermsVersion)} · ${also('sartlar.html')}</p>
 ${termsBody(terms.tr)}
 ${section('İletişim', p(`Soruların ve şikayetlerin için bize ${CONFIG.email} adresinden ulaşabilirsin.`))}
 `,
@@ -485,7 +512,7 @@ page({
   description: 'The MovieForUs terms of use.',
   body: `
 <h1>Terms of Use</h1>
-<p class="muted">Last updated: ${dateEN(TermsVersion)} · <a href="sartlar.html">Türkçe</a></p>
+<p class="muted">Last updated: ${dateEN(TermsVersion)} · ${also('terms.html')}</p>
 <p class="muted">A translation of the Turkish terms, which are the ones accepted in the app and the authoritative version for users in Türkiye.</p>
 ${termsBody(terms.en)}
 ${section('Contact', p(`For questions and complaints you can reach us at ${CONFIG.email}.`))}
@@ -503,7 +530,7 @@ page({
   body: `
 <h1>Destek</h1>
 <p>Bir sorun mu yaşıyorsun ya da bir sorun mu var? Bize <strong>${fill(CONFIG.email)}</strong> adresinden yaz; en kısa sürede dönüş yaparız.</p>
-<p class="muted"><a href="support.html">English</a></p>
+<p class="muted">${also('destek.html')}</p>
 
 ${section('Birini nasıl şikayet ederim?',
   p('Eşleşme ekranında sağ üstteki ⋯ menüsünden “Şikayet et”i seç. Bir mesajı şikayet etmek için mesaja uzun bas. Şikayetin gizli tutulur ve moderatörlerimize anında iletilir.'))}
@@ -512,7 +539,7 @@ ${section('Birini nasıl engellerim?',
   p('Eşleşme ekranında ⋯ menüsünden “Engelle”yi seç. Engellediğin kişi seninle bir daha eşleşemez ve sana yazamaz.'))}
 
 ${section('Hesabımı nasıl silerim?',
-  p('Profil → Hesap bölümündeki “Hesabımı sil” bağlantısını kullan. Profilin, fotoğrafların, eşleşmelerin ve mesajların hemen ve kalıcı olarak silinir.'),
+  p('Profil → Ayarlar’ın en altındaki “Hesabımı sil” düğmesini kullan ve iki onay sorusuna da evet de. Profilin, fotoğrafların, eşleşmelerin ve mesajların hemen ve kalıcı olarak silinir.'),
   '<p>Uygulamaya giremiyorsan <a href="hesap-silme.html">hesap silme sayfasındaki</a> adımları izle.</p>')}
 
 ${section('Neden kimseyle eşleşemiyorum?',
@@ -535,7 +562,7 @@ page({
   body: `
 <h1>Support</h1>
 <p>Stuck, or something wrong? Write to us at <strong>${fill(CONFIG.email)}</strong> and we will get back to you as soon as we can.</p>
-<p class="muted"><a href="destek.html">Türkçe</a></p>
+<p class="muted">${also('support.html')}</p>
 
 ${section('How do I report someone?',
   p('On the match screen, open the ⋯ menu at the top right and choose “Report”. To report a message, press and hold it. Your report is confidential and reaches our moderators straight away.'))}
@@ -544,7 +571,7 @@ ${section('How do I block someone?',
   p('On the match screen, open the ⋯ menu and choose “Block”. Somebody you block can no longer match with you or write to you.'))}
 
 ${section('How do I delete my account?',
-  p('Use “Delete my account” under Profile → Account. Your profile, your photos, your matches and your messages are deleted immediately and permanently.'),
+  p('Use “Delete my account” at the bottom of Profile → Settings, and say yes to both questions. Your profile, your photos, your matches and your messages are deleted immediately and permanently.'),
   '<p>If you cannot get into the app, follow the steps on the <a href="delete-account.html">account deletion page</a>.</p>')}
 
 ${section('Why am I not matching with anyone?',
@@ -592,9 +619,12 @@ h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "
 .top-links a { color: var(--muted); }
 .top-links a:hover { color: var(--text); text-decoration: none; }
 .top-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-.lang { color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px;
+/* The other two languages, side by side in one pill. */
+.lang { display: flex; border: 1px solid var(--border); border-radius: 999px; padding: 0 4px;
   font-size: 13px; font-weight: 600; background: rgba(255,255,255,.03); }
-.lang:hover { text-decoration: none; border-color: rgba(255,255,255,.2); }
+.lang a { color: var(--text); padding: 5px 8px; }
+.lang a + a { border-left: 1px solid var(--border); }
+.lang a:hover { text-decoration: none; color: var(--primary); }
 .insta { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: var(--text);
   border: 1px solid var(--border); background: rgba(255,255,255,.03); }
 .insta:hover { border-color: rgba(255,255,255,.2); }
@@ -889,7 +919,7 @@ page({
   body: `
 <h1>Bu akşam ne izleyeceğinize birlikte karar verin</h1>
 <p>Bir arkadaşın seni MovieForUs’ta ortak odasına çağırdı. Aynı filmleri birlikte kaydırın; hepinizin beğendiği filmler karşınıza çıksın.</p>
-<p class="muted"><a href="join.html">English</a></p>
+<p class="muted">${also('katil.html')}</p>
 
 <div id="with-code">
   <p class="muted">Oda kodu</p>
@@ -916,7 +946,7 @@ page({
   body: `
 <h1>Decide together what to watch tonight</h1>
 <p>A friend has invited you to their shared room on MovieForUs. Swipe the same films together, and the ones you all like come up.</p>
-<p class="muted"><a href="katil.html">Türkçe</a></p>
+<p class="muted">${also('join.html')}</p>
 
 <div id="with-code">
   <p class="muted">Room code</p>
@@ -941,9 +971,7 @@ ${roomScript}
 /* for search engines                                                  */
 /* ------------------------------------------------------------------ */
 
-const Pages = Object.keys(twin);
-const TurkishPages = new Set(['index.html', 'gizlilik.html', 'sartlar.html', 'destek.html', 'hesap-silme.html', 'cocuk-guvenligi.html', 'katil.html']);
-const langOf = (file) => (TurkishPages.has(file) ? 'tr' : 'en');
+const Pages = Versions.flatMap((v) => Languages.map((l) => v[l]));
 fs.writeFileSync(new URL('robots.txt', import.meta.url), `User-agent: *\nAllow: /\n\nSitemap: ${Site}sitemap.xml\n`);
 fs.writeFileSync(
   new URL('sitemap.xml', import.meta.url),
@@ -952,8 +980,7 @@ fs.writeFileSync(
 ${Pages.map(
   (file) => `  <url>
     <loc>${urlOf(file)}</loc>
-    <xhtml:link rel="alternate" hreflang="${langOf(file)}" href="${urlOf(file)}"/>
-    <xhtml:link rel="alternate" hreflang="${langOf(twin[file])}" href="${urlOf(twin[file])}"/>
+${Languages.map((l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${urlOf(versionsOf(file)[l])}"/>`).join('\n')}
   </url>`
 ).join('\n')}
 </urlset>
@@ -962,7 +989,7 @@ ${Pages.map(
 
 const unfilled = Object.entries(CONFIG).filter(([, value]) => typeof value === 'string' && /^\[.*\]$/.test(value));
 console.log(
-  'pages: index.html, gizlilik.html, sartlar.html, destek.html · en.html, privacy.html, terms.html, support.html'
+  `pages: ${Languages.map((l) => Versions.map((v) => v[l]).join(', ')).join(' · ')}`
 );
 if (unfilled.length) {
   console.log(`NOT READY TO PUBLISH — fill in: ${unfilled.map(([key]) => key).join(', ')}`);
@@ -982,13 +1009,13 @@ page({
   body: `
 <h1>Hesabını ve verilerini silme</h1>
 <p>Bu sayfa, <strong>MovieForUs</strong> uygulamasındaki hesabını ve ona bağlı verileri nasıl silebileceğini anlatır.</p>
-<p class="muted"><a href="delete-account.html">English</a></p>
+<p class="muted">${also('hesap-silme.html')}</p>
 
 ${section('1. Uygulamanın içinden (en hızlı yol)',
   list([
     'MovieForUs’u aç ve alttaki Profil sekmesine geç.',
-    'Aşağı kaydırıp Hesap bölümünde “Hesabımı sil”’e dokun.',
-    '“Kalıcı olarak sil” ile onayla. Hesabın ve verilerin hemen silinir.',
+    'Sağ üstteki dişliye dokunup Ayarlar’ı aç, en alttaki Hesabı sil bölümünde “Hesabımı sil”e dokun.',
+    '“Kalıcı olarak sil” ile onayla, ardından “Emin misin?” sorusuna “Evet, sil” de. Hesabın ve verilerin hemen silinir.',
   ]))}
 
 ${section('2. Uygulamaya giremiyorsan',
@@ -1025,13 +1052,13 @@ page({
   body: `
 <h1>Deleting your account and data</h1>
 <p>This page explains how to delete your account and the data linked to it in <strong>MovieForUs</strong>.</p>
-<p class="muted"><a href="hesap-silme.html">Türkçe</a></p>
+<p class="muted">${also('delete-account.html')}</p>
 
 ${section('1. In the app (the quickest way)',
   list([
     'Open MovieForUs and go to the Profile tab.',
-    'Scroll down to Account and tap “Delete my account”.',
-    'Confirm with “Delete permanently”. Your account and data are deleted immediately.',
+    'Tap the gear at the top right to open Settings, and at the bottom, under Delete account, tap “Delete my account”.',
+    'Confirm with “Delete permanently”, then answer “Yes, delete it” to “Are you sure?”. Your account and data are deleted immediately.',
   ]))}
 
 ${section('2. If you cannot get into the app',
@@ -1077,7 +1104,7 @@ page({
   body: `
 <h1>Çocuk güvenliği standartları</h1>
 <p><strong>MovieForUs</strong>, yalnızca 18 yaş ve üzerindeki kişiler için bir tanışma uygulamasıdır. Çocukların cinsel istismarına ve sömürüsüne (CSAE) ve çocukların cinsel istismarını içeren materyallere (CSAM) karşı <strong>sıfır tolerans</strong> uygularız.</p>
-<p class="muted"><a href="child-safety.html">English</a></p>
+<p class="muted">${also('cocuk-guvenligi.html')}</p>
 
 ${section('Yasak olanlar',
   list([
@@ -1116,7 +1143,7 @@ page({
   body: `
 <h1>Child safety standards</h1>
 <p><strong>MovieForUs</strong> is a dating app for people aged 18 and over only. We have <strong>zero tolerance</strong> for child sexual abuse and exploitation (CSAE) and for child sexual abuse material (CSAM).</p>
-<p class="muted"><a href="cocuk-guvenligi.html">Türkçe</a></p>
+<p class="muted">${also('child-safety.html')}</p>
 
 ${section('What is prohibited',
   list([
@@ -1144,5 +1171,270 @@ ${section('When something is reported',
 ${section('Contact',
   p(`For any report or question about child safety: ${CONFIG.email}. This address reaches the person responsible for MovieForUs’s child safety practices.`),
   p('If a child is in immediate danger, call your local emergency number first.'))}
+`,
+});
+
+/* ------------------------------------------------------------------ */
+/* Spanish (Latin American)                                            */
+/* ------------------------------------------------------------------ */
+// The same pages as above, in the Spanish the app speaks (src/i18n/es.ts:
+// Latin American, "tú"). Buttons are named as the app names them in Spanish.
+
+page({
+  file: 'es.html',
+  lang: 'es',
+  home: true,
+  title: 'MovieForUs — Conoce a alguien que ama tus películas',
+  description: 'MovieForUs es una app de citas que te une con personas por su gusto en películas: desliza películas, no personas, y haz match con quienes aman las mismas.',
+  body: landingBody('es', { ...CONFIG, clubs: clubNames.es, escape }),
+});
+
+page({
+  file: 'privacidad.html',
+  lang: 'es',
+  title: 'Política de privacidad — MovieForUs',
+  description: 'Cómo trata la app MovieForUs los datos personales.',
+  body: `
+<h1>Política de privacidad</h1>
+<p class="muted">Vigente desde: ${dateES(CONFIG.effective)} · ${also('privacidad.html')}</p>
+<p>Esta política explica qué datos personales trata la app móvil MovieForUs, por qué, con quién se comparten y cuáles son tus derechos. Es una traducción: para los usuarios en Türkiye prevalece la versión en turco.</p>
+
+${section('1. Responsable',
+  p(`Responsable del tratamiento de los datos: ${CONFIG.controller.es}. Contacto: ${CONFIG.email}.`))}
+
+${section('2. Qué datos recopilamos',
+  list([
+    'Cuenta: si inicias sesión con Apple o Google, la dirección de correo que esa cuenta comparte con nosotros (la dirección de reenvío de Apple si eliges “Ocultar mi correo electrónico”), tu nombre y un identificador de esa cuenta; tu contraseña nunca nos llega. En las cuentas creadas con correo y contraseña, tu dirección de correo y tu contraseña (guardada cifrada por nuestro proveedor de autenticación; no podemos verla). Con Iniciar sesión con Apple guardamos un token que emite Apple, para poder revocar el vínculo con Apple cuando eliminas tu cuenta. Si continúas como invitado, solo se crea un identificador de cuenta.',
+    'Perfil: nombre visible, foto de perfil, fecha de nacimiento, estatura, hábitos de tabaco y alcohol, una frase de una película favorita, tu género y tus preferencias para hacer match (los géneros que te interesan y un rango de edad).',
+    'Gusto en películas: tus respuestas al cuestionario inicial, las películas que deslizas (te gustaron o las pasaste), las películas a las que les das corazón, tu lista para ver y tus calificaciones, y las listas de películas que creas (sus nombres y las películas que contienen).',
+    'Ubicación: si lo permites, la ubicación precisa de tu dispositivo y la ciudad que se deriva de ella.',
+    'Matches y mensajes: con quién hiciste match, el estado de cada match, los mensajes que envías y recibes, las salas compartidas y las películas deslizadas en ellas.',
+    'Registros de seguridad: los reportes que haces y los que se hacen sobre ti, las personas que bloqueas, tus aceptaciones de los términos de uso y los resultados de las revisiones automáticas de tus fotos de perfil.',
+    'Dispositivo: un token de notificaciones push para tu dispositivo.',
+    'Datos de uso: lo que haces en la app: las pantallas que abres; las películas que abres, a las que les das corazón, calificas, agregas a listas y deslizas, y desde qué sección abriste una película; tus matches y lo que haces con ellos; que enviaste un mensaje (no lo que decía); tu uso de las salas compartidas; cuántos resultados encontró una búsqueda (no lo que buscaste), y los cambios en tus ajustes. Junto con esto, la versión de la app, el modelo del dispositivo, la versión del sistema operativo, el idioma de la app, un número de dispositivo generado al azar y tu identificador de cuenta.',
+    'Registros técnicos: tu dirección IP y los detalles de tus solicitudes pueden quedar en los registros de nuestros proveedores cuando te conectas.',
+  ]),
+  p('No mostramos anuncios, no te rastreamos en otras apps ni sitios web, no usamos tu identificador de publicidad y no vendemos datos personales. El único análisis que hacemos es el análisis de uso descrito abajo, para mejorar la app.'))}
+
+${section('3. Para qué los tratamos',
+  list([
+    'Para prestar el servicio: administrar tu cuenta, mostrar tu perfil, sugerir matches según tu gusto en películas y hacer funcionar los mensajes y las salas compartidas.',
+    'Matches según la ubicación (consentimiento): para calcular distancias, de modo que solo hagas match con personas a menos de 300 km (1000 km en los clubes de fans). Puedes retirar el permiso de ubicación en los ajustes de tu dispositivo en cualquier momento; entonces los matches dejan de funcionar.',
+    'Datos de categoría especial (consentimiento explícito): tu género y los géneros que te interesan pueden revelar información sobre tu vida sexual o tu orientación. Solo los usamos para sugerir matches.',
+    'Notificaciones (consentimiento): para avisarte de nuevos matches y mensajes. Puedes desactivarlas en los ajustes de tu dispositivo.',
+    'Mejorar la app (interés legítimo): analizar los datos de uso para entender qué funciones se usan y cuánto, dónde tiene dificultades la gente y qué cambios funcionan. Como los Términos de uso lo describen, no empieza antes de que los aceptes; lo que haces antes (por ejemplo, registrarte) se guarda en tu dispositivo. No tienes que permitirlo para usar la app: desactiva “Compartir datos de uso” en Perfil → Ajustes → Privacidad y no se enviarán más datos de uso desde ese dispositivo.',
+    'Seguridad de la comunidad (interés legítimo y obligación legal): revisar automáticamente las fotos de perfil antes de que alguien más pueda verlas, revisar reportes, eliminar el contenido que rompe las reglas, prevenir abusos y responder a solicitudes legales. La revisión automática busca desnudos, contenido sexual, violencia y autolesiones; una foto que no la pasa se elimina y no se puede usar en tu perfil. Puedes impugnar la decisión escribiéndonos, y una persona la revisará.',
+  ]))}
+
+${section('4. Quién puede ver tu información',
+  list([
+    'Las personas con las que haces match: tu nombre visible, foto, edad, estatura, hábitos de tabaco y alcohol, frase de película, género, una distancia aproximada y redondeada entre ustedes, las películas que les gustaron a los dos, su porcentaje de compatibilidad y los clubes de fans a los que perteneces. Tu fecha de nacimiento y tu ubicación exacta nunca se muestran.',
+    'Clubes de fans: se guardan las 5 respuestas que das al unirte a un club. Solo tú y las personas con las que haces match pueden ver en qué clubes estás; alguien con quien hiciste match a través de un club también ve las preguntas que respondieron igual. Puedes salir de un club cuando quieras, y tus respuestas se eliminan al salir.',
+    'Las personas en la misma sala: tu nombre visible, tu emoji y tu foto de perfil. Solo puede entrar a una sala alguien a quien le envías el código; una sala abierta desde un match pertenece solo a esas dos personas.',
+    'Las personas que podrían hacer match contigo y abren la página de una película: si le diste corazón a esa película, tu foto puede aparecer ahí difuminada, dentro de un pequeño círculo con un máximo de dos, junto a un número. No se muestran tu nombre, tu edad, tu distancia ni las otras películas que te gustan, y solo pueden verla las personas que pasan mutuamente tus filtros para hacer match (rango de edad, preferencia de género, 300 km). Puedes desactivarlo en la app en Perfil → Ajustes → Privacidad, “Mi foto en las páginas de películas”; así, tu foto vuelve a mostrarse solo a tus matches y a las personas de tus salas, y tus matches no se ven afectados.',
+    'Si pasas un match o bloqueas a alguien, su acceso a tu foto termina.',
+    'Moderadores: solo lo relacionado con un reporte en revisión o con una revisión de foto impugnada.',
+    'Autoridades públicas: solo cuando la ley lo exige.',
+  ]))}
+
+${section('5. Proveedores de servicios y transferencias internacionales',
+  p('Usamos los proveedores de abajo, cuyos servidores pueden estar fuera de Türkiye y de tu país.'),
+  list([
+    `Supabase: base de datos, autenticación, almacenamiento de fotos e infraestructura en tiempo real. Región del servidor: ${CONFIG.region.es}.`,
+    'Expo (650 Industries, EE. UU.): entrega de notificaciones push y de actualizaciones de la app. Al hacerlo, Expo puede analizar datos técnicos como la dirección IP de tu dispositivo y los informes de fallos, de forma agregada, para mejorar su propio servicio; para ese uso, Expo se rige por su propia política de privacidad.',
+    'OpenAI (EE. UU.): la revisión automática de las fotos de perfil. Una foto que subes solo se envía para esa revisión. OpenAI no usa los datos enviados a través de su API para entrenar modelos y puede conservarlos hasta 30 días para vigilar abusos.',
+    'Amplitude (Amplitude, Inc., EE. UU.; los datos se guardan en sus servidores de la Unión Europea): análisis de uso. No se le envían tu nombre, tu correo, tus fotos, el contenido de tus mensajes, el texto de tus búsquedas, tu ubicación, tu dirección IP, tu género ni tus preferencias para hacer match; solo te conoce por tu identificador de cuenta.',
+    'Apple: Iniciar sesión con Apple, entrega de notificaciones en dispositivos iOS y búsqueda del nombre de una ciudad a partir de una ubicación.',
+    'Google (EE. UU.): Iniciar sesión con Google. Google comparte la dirección de correo, el nombre y el identificador de la cuenta con la que inicias sesión.',
+    'TMDB (The Movie Database): información e imágenes de películas, solicitadas directamente desde tu dispositivo; TMDB puede ver tu dirección IP y tus búsquedas de películas.',
+    'YouTube: los tráileres se abren en YouTube, donde se aplica la política de privacidad de YouTube.',
+  ]))}
+
+${section('6. Cuánto tiempo los conservamos',
+  list([
+    'Conservamos tus datos mientras exista tu cuenta.',
+    'Cuando eliminas tu cuenta en la app (Perfil → Ajustes → Eliminar cuenta → Eliminar mi cuenta), tu perfil, tus fotos y sus registros de revisión, tu gusto en películas, tu lista para ver, tus listas de películas, tus deslizamientos, tus matches, tus mensajes y tu token push se eliminan de inmediato y para siempre.',
+    `Los registros del análisis de uso se guardan en Amplitude. Cuando eliminas tu cuenta, se le pide automáticamente a Amplitude que los elimine, y lo hace en un plazo de 30 días. Si algo sale mal, escribe a ${CONFIG.email}.`,
+    'Por la seguridad de la comunidad, los reportes sobre una persona pueden conservarse hasta 2 años después de que se elimine su cuenta.',
+    'Las copias en los respaldos y los registros técnicos de nuestros proveedores se eliminan al final de sus ciclos de conservación.',
+  ]))}
+
+${section('7. Cómo los protegemos',
+  p('Todas las conexiones entre la app y nuestros servidores están cifradas. Las reglas de acceso por fila abren cada dato solo a las personas que necesitan verlo. Las fotos se guardan en un almacenamiento privado y se muestran mediante enlaces firmados de corta duración.'))}
+
+${section('8. Tus derechos',
+  p('Puedes acceder a tus datos, corregirlos o eliminarlos, oponerte a su tratamiento y preguntar con quién se han compartido. Puedes eliminar tu cuenta y tus datos en cualquier momento desde la app.'),
+  p(`Para cualquier otra solicitud, escribe a ${CONFIG.email}; respondemos en un plazo de 30 días.`))}
+
+${section('9. Si estás en la Unión Europea, el EEE o el Reino Unido',
+  p('El Reglamento General de Protección de Datos de la UE (RGPD), o el RGPD del Reino Unido, también se aplica a tus datos. Lo que sigue complementa las secciones anteriores.'),
+  list([
+    'Bases legales: el funcionamiento de tu cuenta, tu perfil, los matches, los mensajes y las salas compartidas es la ejecución de nuestro contrato contigo (art. 6(1)(b)). La ubicación y las notificaciones se basan en tu consentimiento (art. 6(1)(a)), que puedes retirar en cualquier momento en los ajustes de tu dispositivo. Tu género y los géneros que te interesan, que pueden revelar tu orientación sexual, se basan en el consentimiento explícito que das al ingresarlos (art. 9(2)(a)); puedes quitarlos eliminando tu cuenta. La revisión de fotos, la gestión de reportes y la prevención de abusos se basan en nuestro interés legítimo en una comunidad segura (art. 6(1)(f)) y en obligaciones legales (art. 6(1)(c)). El análisis de uso se basa en nuestro interés legítimo en mejorar la app (art. 6(1)(f)); puedes oponerte en cualquier momento con el interruptor “Compartir datos de uso” en Ajustes.',
+    `Tus derechos: puedes pedir acceso a tus datos y recibir una copia en un formato portable, que se corrijan o se eliminen, que se limite su tratamiento, oponerte a él y retirar en cualquier momento cualquier consentimiento que hayas dado; retirar el consentimiento no afecta al tratamiento anterior. La mayor parte puedes hacerla tú mismo en la app; para lo demás, escribe a ${CONFIG.email}. Respondemos en el plazo de un mes.`,
+    'Decisiones automatizadas: la revisión automática de fotos decide si una foto puede mostrarse. Puedes pedir que una persona revise la decisión, dar tu punto de vista e impugnarla.',
+    'Dónde están tus datos: tu perfil, tus mensajes y los registros del análisis de uso se guardan en la Unión Europea (Supabase en Fráncfort, Amplitude en sus servidores de la UE). Los proveedores fuera de la UE de la sección 5 (OpenAI, Expo, Google, Apple) reciben solo lo que se describe ahí; las transferencias a ellos se basan en las Cláusulas Contractuales Tipo de la Comisión Europea incluidas en sus condiciones de tratamiento de datos o, cuando el proveedor está certificado, en el Marco de Privacidad de Datos UE-EE. UU.',
+    `Reclamaciones: puedes presentar una reclamación ante la autoridad de protección de datos del lugar donde vives o trabajas; en el Reino Unido es la Information Commissioner’s Office (ico.org.uk). Si primero nos escribes a ${CONFIG.email}, intentaremos solucionarlo.`,
+  ]))}
+
+${section('10. Menores de edad',
+  p('MovieForUs no es para menores de 18 años. Cerramos las cuentas que descubrimos que pertenecen a alguien menor de 18.'))}
+
+${section('11. Cambios',
+  p('Podemos actualizar esta política. Te avisaremos en la app de los cambios importantes; la versión vigente siempre está en esta página.'))}
+`,
+});
+
+page({
+  file: 'terminos.html',
+  lang: 'es',
+  title: 'Términos de uso — MovieForUs',
+  description: 'Los términos de uso de MovieForUs.',
+  body: `
+<h1>Términos de uso</h1>
+<p class="muted">Última actualización: ${dateES(TermsVersion)} · ${also('terminos.html')}</p>
+<p class="muted">Una traducción de los términos en turco, que son la versión que prevalece para los usuarios en Türkiye.</p>
+${termsBody(terms.es)}
+${section('Contacto', p(`Para preguntas y quejas puedes escribirnos a ${CONFIG.email}.`))}
+`,
+});
+
+page({
+  file: 'soporte.html',
+  lang: 'es',
+  title: 'Soporte — MovieForUs',
+  description: 'Soporte y contacto de MovieForUs.',
+  body: `
+<h1>Soporte</h1>
+<p>¿Te atoraste o algo no funciona? Escríbenos a <strong>${fill(CONFIG.email)}</strong> y te responderemos lo antes posible.</p>
+<p class="muted">${also('soporte.html')}</p>
+
+${section('¿Cómo reporto a alguien?',
+  p('En la pantalla del match, abre el menú ⋯ arriba a la derecha y elige “Reportar”. Para reportar un mensaje, mantenlo presionado. Tu reporte es confidencial y llega de inmediato a nuestros moderadores.'))}
+
+${section('¿Cómo bloqueo a alguien?',
+  p('En la pantalla del match, abre el menú ⋯ y elige “Bloquear”. Alguien a quien bloqueas ya no puede hacer match contigo ni escribirte.'))}
+
+${section('¿Cómo elimino mi cuenta?',
+  p('Usa “Eliminar mi cuenta” al final de Perfil → Ajustes y responde que sí a las dos preguntas. Tu perfil, tus fotos, tus matches y tus mensajes se eliminan de inmediato y para siempre.'),
+  '<p>Si no puedes entrar a la app, sigue los pasos de la <a href="eliminar-cuenta.html">página para eliminar tu cuenta</a>.</p>')}
+
+${section('¿Por qué no hago match con nadie?',
+  p('Para hacer match necesitas un perfil completo, permiso de ubicación y coincidir con alguien en al menos 8 de las mismas películas, o que a los dos les gusten 5 de las mismas películas. Puedes deslizar 30 películas al día; las películas en común se acumulan en unos días.'))}
+
+${section('¿Es una emergencia?',
+  p('Si sientes que estás en peligro, llama de inmediato al número de emergencias de tu país (911 en México).'))}
+`,
+});
+
+const playES = CONFIG.playStore
+  ? `<a class="button" href="${CONFIG.playStore}">Disponible en Google Play</a>`
+  : '';
+
+page({
+  file: 'unirse.html',
+  lang: 'es',
+  title: 'Unirse a una sala — MovieForUs',
+  description: 'Únete a una sala compartida en MovieForUs: deslicen juntos las mismas películas y encuentren la que les guste a todos.',
+  body: `
+<h1>Decidan juntos qué ver esta noche</h1>
+<p>Alguien te invitó a su sala compartida en MovieForUs. Deslicen juntos las mismas películas, y aparecerán las que les gusten a todos.</p>
+<p class="muted">${also('unirse.html')}</p>
+
+<div id="with-code">
+  <p class="muted">Código de la sala</p>
+  <p class="room-code" id="room-code">——————</p>
+  <div class="actions">
+    <a class="button primary" id="open-room" href="#">Abrir en MovieForUs</a>
+  </div>
+</div>
+<p id="no-code" hidden>Este enlace no tiene un código de sala válido. Pídele el código otra vez a la persona que te invitó.</p>
+
+${section('¿Todavía no tienes la app?',
+  `<div class="actions"><a class="button" href="${CONFIG.appStore}">Descargar en el App Store</a>${playES}</div>`,
+  CONFIG.playStore ? '' : p('Muy pronto en Google Play para Android.'),
+  `<ol><li>${fill('Descarga MovieForUs y ábrela.')}</li><li>${fill('En la pestaña Perfil, toca “Abrir o unirse a una sala”.')}</li><li>${fill('Escribe el código de arriba y toca “Unirse”.')}</li></ol>`)}
+${roomScript}
+`,
+});
+
+page({
+  file: 'eliminar-cuenta.html',
+  lang: 'es',
+  title: 'Eliminar tu cuenta — MovieForUs',
+  description: 'Cómo eliminar tu cuenta y tus datos de MovieForUs.',
+  body: `
+<h1>Eliminar tu cuenta y tus datos</h1>
+<p>Esta página explica cómo eliminar tu cuenta y los datos vinculados a ella en <strong>MovieForUs</strong>.</p>
+<p class="muted">${also('eliminar-cuenta.html')}</p>
+
+${section('1. En la app (la forma más rápida)',
+  list([
+    'Abre MovieForUs y ve a la pestaña Perfil.',
+    'Toca el engrane arriba a la derecha para abrir Ajustes y, al final, en Eliminar cuenta, toca “Eliminar mi cuenta”.',
+    'Confirma con “Eliminar para siempre” y luego responde “Sí, eliminarla” a “¿Estás seguro?”. Tu cuenta y tus datos se eliminan de inmediato.',
+  ]))}
+
+${section('2. Si no puedes entrar a la app',
+  p(`Envía un correo con el asunto “Eliminar mi cuenta” a ${CONFIG.email} desde la dirección de correo vinculada a tu cuenta. Si iniciaste sesión con Apple o Google, escribe desde la dirección de esa cuenta. Cuando confirmemos que la cuenta es tuya, la eliminaremos en un plazo de 30 días y te avisaremos.`),
+  p('Las cuentas de invitado no están vinculadas a un correo, así que solo pueden eliminarse desde la app, en el dispositivo donde se crearon.'))}
+
+${section('Qué se elimina',
+  list([
+    'Tu perfil, tus fotos y sus registros de revisión',
+    'Tu gusto en películas, tus respuestas al cuestionario y las películas que te gustaron',
+    'Tu lista para ver, tus listas de películas y tus deslizamientos',
+    'Tus matches, tus mensajes, tus salas compartidas y tu token de notificaciones',
+    'Tus registros del análisis de uso: se le pide automáticamente a Amplitude que los elimine, y lo hace en un plazo de 30 días.',
+  ]))}
+
+${section('Qué se conserva por un tiempo',
+  list([
+    'Por la seguridad de la comunidad, los reportes hechos sobre ti pueden conservarse hasta 2 años después de eliminar tu cuenta. Los reportes que hiciste ya no llevan tu nombre.',
+    'Las copias en los respaldos de nuestros proveedores se eliminan al final de su ciclo de conservación.',
+  ]))}
+
+${section('Eliminar algunos datos sin eliminar tu cuenta',
+  p(`Puedes cambiar o quitar tu foto de perfil, los datos de tu perfil, las películas que te gustaron y tus listas en la app en cualquier momento. Puedes desactivar el envío de datos de uso en Ajustes → Privacidad. Para que se elimine cualquier otro dato, escribe a ${CONFIG.email}.`))}
+
+<p class="muted">Para más detalles, consulta la sección 6 de la <a href="privacidad.html">Política de privacidad</a>.</p>
+`,
+});
+
+page({
+  file: 'seguridad-infantil.html',
+  lang: 'es',
+  title: 'Normas de seguridad infantil — MovieForUs',
+  description: 'Las normas de MovieForUs contra el abuso y la explotación sexual infantil.',
+  body: `
+<h1>Normas de seguridad infantil</h1>
+<p><strong>MovieForUs</strong> es una app de citas solo para personas de 18 años o más. Tenemos <strong>tolerancia cero</strong> con el abuso y la explotación sexual infantil (CSAE) y con el material de abuso sexual infantil (CSAM).</p>
+<p class="muted">${also('seguridad-infantil.html')}</p>
+
+${section('Qué está prohibido',
+  list([
+    'Cualquier contenido o conducta que muestre, elogie, fomente o conduzca al abuso o la explotación sexual de menores',
+    'Contactar, engañar o atraer a un menor con fines sexuales (grooming)',
+    'Que alguien menor de 18 abra una cuenta, o que se abra una cuenta en su nombre',
+  ]),
+  p('Estas reglas forman parte de los Términos de uso, que se aceptan antes de poder usar la app.'))}
+
+${section('Cómo lo prevenimos',
+  list([
+    'Límite de edad: para crear un perfil para hacer match se pide la fecha de nacimiento, y no se acepta una fecha de alguien menor de 18.',
+    'Revisión de fotos: cada foto de perfil se revisa automáticamente antes de que alguien la vea; las fotos sexuales se rechazan y se eliminan.',
+    'Sin imágenes en el chat: los matches solo pueden enviarse texto y películas, nunca fotos, videos ni archivos.',
+    'Reportes: cada perfil y cada mensaje se puede reportar desde la app con un toque, y “Podría ser menor de 18” es un motivo propio. Se puede bloquear a las personas.',
+  ]))}
+
+${section('Cuando se reporta algo',
+  list([
+    'Los reportes nos llegan de inmediato y se revisan en un plazo de 24 horas.',
+    'En un reporte relacionado con la seguridad infantil, el contenido se elimina de inmediato y la cuenta se cierra para siempre.',
+    'El material de abuso sexual infantil, o la información de que un menor está en peligro, se denuncia ante las autoridades competentes según lo exige la ley: las fuerzas del orden y la fiscalía en Türkiye, y el NCMEC (CyberTipline) a nivel internacional. Los registros se conservan durante el tiempo que establece la ley, para cuando las autoridades los soliciten.',
+  ]))}
+
+${section('Contacto',
+  p(`Para cualquier reporte o pregunta sobre seguridad infantil: ${CONFIG.email}. Esta dirección llega a la persona responsable de las prácticas de seguridad infantil de MovieForUs.`),
+  p('Si un menor está en peligro inmediato, llama primero al número de emergencias de tu país.'))}
 `,
 });

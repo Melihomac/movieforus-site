@@ -1,4 +1,4 @@
-// The landing pages (index.html, en.html): a long page in sections, laid out
+// The landing pages (index.html, en.html, es.html): a long page in sections, laid out
 // after the look the site was asked to have -- dark, red light behind the
 // headings, a phone beside the hero and a deck of film cards that can be
 // swiped right on the page (home.js).
@@ -197,6 +197,103 @@ const T = {
 
     ctaTitle: 'Someone who shares your taste is closer than you think.',
     ctaLead: 'Download MovieForUs, swipe a few films and meet people who love the same ones. Completely free.',
+  },
+
+  // Latin American Spanish, "tú", as in the app (src/i18n/es.ts). Apple's
+  // Spanish badge is not in this folder yet, so the English one stands in.
+  es: {
+    home: 'es.html',
+    anchors: [
+      ['como-funciona', 'Cómo funciona'],
+      ['pruebalo', 'Pruébalo'],
+      ['match', 'Match'],
+      ['clubes', 'Clubes de fans'],
+      ['salas', 'Salas'],
+      ['seguridad', 'Seguridad'],
+    ],
+    get: 'Descargar',
+    eyebrow: 'Una app de citas basada en tu gusto por el cine',
+    title: 'Conoce a alguien que <em>ama tus películas.</em>',
+    lead: 'Desliza películas, no personas. Haz match con gente a menos de 300 km que coincide contigo en las mismas películas; luego platiquen y elijan juntos la película de esta noche.',
+    badge: { src: 'app-store-badge-en.svg', alt: 'Descargar en el App Store', width: 120 },
+    play: 'Google Play · Muy pronto',
+    note: 'Gratis para iPhone · Mayores de 18',
+    stats: [
+      ['8 películas', 'para conocer tu gusto'],
+      ['300 km', 'radio para hacer match'],
+      ['3 al día', 'nuevos matches'],
+      ['Gratis', 'sin suscripción'],
+    ],
+    shots: { front: 'img/chat-es.jpg', back: 'img/profile-es.jpg', matches: 'img/matches-es.jpg', clubs: 'img/clubs-es.jpg' },
+    shotAlt: {
+      front: 'Un chat en MovieForUs: seis películas en común con Valentina',
+      back: 'Un perfil en MovieForUs',
+      matches: 'Tus matches: Valentina, Sofía y Camila',
+      clubs: 'La lista de clubes de fans',
+    },
+    heroChip: ['Nuevo match', 'Valentina, 27 · 6 gustos en común'],
+
+    featuresEyebrow: 'Cómo funciona',
+    featuresTitle: 'Desliza películas, no personas',
+    featuresLead: 'Nada de juzgar primero una cara. Tus decisiones sobre películas muestran tu gusto, y MovieForUs encuentra a las personas que de verdad lo comparten.',
+    features: [
+      ['Descubrir', 'Desliza y descubre', 'A la derecha si te gusta, a la izquierda si no. 30 tarjetas al día: un tercio de un mazo que ve todo el mundo, el resto elegido para ti.'],
+      ['Corazones', 'Dale corazón a las películas que amas', 'Si le das corazón a las mismas 5 películas que alguien, hacen match sin necesidad de deslizar.'],
+      ['Actores', 'Tus actores favoritos', 'Elige hasta 3 actores favoritos. Las personas que comparten uno contigo se te proponen primero.'],
+    ],
+
+    demoEyebrow: 'Pruébalo aquí',
+    demoTitle: 'Desliza algunas películas y mira cómo se siente',
+    demoLead: 'Arrastra una tarjeta a la derecha para darle me gusta, a la izquierda para pasar, o usa los botones de abajo. Estas películas son inventadas; en la app deslizas películas reales.',
+    deckLabel: 'Un mazo de películas de ejemplo',
+    like: 'Me gusta',
+    pass: 'Pasar',
+    love: 'Corazón',
+    stampLike: 'ME GUSTA',
+    stampPass: 'PASO',
+    films: [
+      { title: 'Medianoche en Lisboa', meta: 'Romance · Drama', text: 'Dos desconocidos pierden el último tranvía y platican hasta que sale el sol.', art: 'lisbon' },
+      { title: 'Cartas a Juniper', meta: 'Drama', text: 'Una caja de cartas viejas la lleva de vuelta al pueblo del que juró irse.', art: 'juniper' },
+      { title: 'La última luz del verano', meta: 'Romance · Comedia', text: 'Un verano, un proyector en una azotea y una película que los dos recordarán.', art: 'summer' },
+    ],
+    resultTitle: '¡Listo!',
+    result: (n) => `Te gustaron <b data-liked>0</b> de ${n} películas. En la app, haces match cuando alguien coincide contigo en las mismas películas.`,
+    again: 'Empezar de nuevo',
+    resultGet: 'Descargar la app',
+
+    matchEyebrow: 'Match',
+    matchTitle: 'Dos caminos para hacer match',
+    matchLead: 'MovieForUs te propone personas por sus decisiones sobre películas, no por sus fotos. Basta con uno de los dos:',
+    matchWays: [
+      ['Gusto en común', 'Los dos decidieron sobre al menos 8 de las mismas películas y coinciden en la mayoría.'],
+      ['Corazones en común', 'Le dieron corazón a las mismas 5 películas. Con un actor favorito en común, bastan 3.'],
+      ['Siempre cerca', 'Todos están a menos de 300 km. Las distancias se muestran redondeadas a 5 km.'],
+    ],
+    matchCard: { label: 'Tienes un nuevo match', name: 'Valentina, 27', facts: ['6 gustos en común', 'A menos de 5 km'], open: 'Abrir el chat' },
+
+    clubsEyebrow: 'Clubes de fans',
+    clubsTitle: 'Haz match con fans de la misma saga',
+    clubsLead: 'Únete al club de una saga que te encanta y responde 5 preguntas rápidas para hacer match con sus fans a hasta 1000 km. 3 matches al día en cada club.',
+    clubsCount: (n) => `${n} clubes`,
+
+    roomEyebrow: 'Salas compartidas',
+    roomTitle: 'Elijan juntos la película de esta noche',
+    roomLead: 'Abre una sala y envía el código a tus amigos o a tu match. Hasta 4 personas deslizan las mismas películas, y aparecen las que les gustan a todos.',
+    roomPoints: ['Únete con un toque desde un enlace de invitación', 'Empieza directo desde un chat con “Elijamos una película juntos”', 'Filtra por género y deslicen juntos el mismo mazo'],
+    roomCard: { code: 'Código de la sala', people: '3 personas en la sala', match: 'Les gustó a todos', film: 'La última luz del verano' },
+
+    safetyEyebrow: 'Seguridad y privacidad',
+    safetyTitle: 'Para que te sientas a gusto',
+    safety: [
+      ['18+', 'Solo adultos', 'MovieForUs es para personas de 18 años o más. Para hacer match necesitas un perfil completo con foto.'],
+      ['!', 'Bloquea y reporta', 'Bloquea o reporta a alguien con un toque. Los reportes llegan de inmediato a nuestros moderadores.'],
+      ['◐', 'Caras difuminadas', 'En las páginas de películas solo te ven como una foto difuminada, y hasta eso lo puedes desactivar.'],
+      ['⊘', 'Sin anuncios ni venta de datos', 'No mostramos anuncios ni vendemos datos. Los datos se guardan en la Unión Europea (Fráncfort).'],
+    ],
+    safetyMore: ['privacidad.html', 'Leer la política de privacidad'],
+
+    ctaTitle: 'Alguien que comparte tu gusto está más cerca de lo que crees.',
+    ctaLead: 'Descarga MovieForUs, desliza algunas películas y conoce a personas que aman las mismas. Totalmente gratis.',
   },
 };
 

@@ -31,9 +31,12 @@ h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "
 .top-links a { color: var(--muted); }
 .top-links a:hover { color: var(--text); text-decoration: none; }
 .top-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-.lang { color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px;
+/* The other two languages, side by side in one pill. */
+.lang { display: flex; border: 1px solid var(--border); border-radius: 999px; padding: 0 4px;
   font-size: 13px; font-weight: 600; background: rgba(255,255,255,.03); }
-.lang:hover { text-decoration: none; border-color: rgba(255,255,255,.2); }
+.lang a { color: var(--text); padding: 5px 8px; }
+.lang a + a { border-left: 1px solid var(--border); }
+.lang a:hover { text-decoration: none; color: var(--primary); }
 .insta { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: var(--text);
   border: 1px solid var(--border); background: rgba(255,255,255,.03); }
 .insta:hover { border-color: rgba(255,255,255,.2); }

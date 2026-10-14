@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unirse a una sala — MovieForUs</title>
+<meta name="description" content="Únete a una sala compartida en MovieForUs: deslicen juntos las mismas películas y encuentren la que les guste a todos.">
+<meta name="theme-color" content="#050506">
+<link rel="canonical" href="https://movieforus.com/unirse.html">
+<link rel="alternate" hreflang="tr" href="https://movieforus.com/katil.html">
+<link rel="alternate" hreflang="en" href="https://movieforus.com/join.html">
+<link rel="alternate" hreflang="es" href="https://movieforus.com/unirse.html">
+<link rel="alternate" hreflang="x-default" href="https://movieforus.com/katil.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MovieForUs">
+<meta property="og:url" content="https://movieforus.com/unirse.html">
+<meta property="og:title" content="Unirse a una sala — MovieForUs">
+<meta property="og:description" content="Únete a una sala compartida en MovieForUs: deslicen juntos las mismas películas y encuentren la que les guste a todos.">
+<meta property="og:image" content="https://movieforus.com/img/og-es.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="628">
+<meta property="og:locale" content="es_LA">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Google shows a site's icon only when it is square and a multiple of
+     48 px: logo.png is 192 px, favicon.ico carries 16, 32 and 48. -->
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="logo.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="logo.png">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="brand" href="es.html"><img src="logo.png" alt="" width="30" height="30"><span class="wordmark">Movie<span class="for">For</span>Us</span></a>
+  <nav class="top-links"><a href="es.html">Inicio</a><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos</a><a href="soporte.html">Soporte</a></nav>
+  <div class="top-right"><span class="lang"><a href="katil.html" hreflang="tr" lang="tr" title="Türkçe">TR</a><a href="join.html" hreflang="en" lang="en" title="English">EN</a></span><a class="insta" href="https://www.instagram.com/movieforusapp/" aria-label="Instagram @movieforusapp"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a class="get" href="https://apps.apple.com/app/movieforus/id6811587180">Descargar →</a></div>
+</div></header>
+<main class="doc">
+
+<h1>Decidan juntos qué ver esta noche</h1>
+<p>Alguien te invitó a su sala compartida en MovieForUs. Deslicen juntos las mismas películas, y aparecerán las que les gusten a todos.</p>
+<p class="muted"><a href="katil.html" hreflang="tr">Türkçe</a> · <a href="join.html" hreflang="en">English</a></p>
+
+<div id="with-code">
+  <p class="muted">Código de la sala</p>
+  <p class="room-code" id="room-code">——————</p>
+  <div class="actions">
+    <a class="button primary" id="open-room" href="#">Abrir en MovieForUs</a>
+  </div>
+</div>
+<p id="no-code" hidden>Este enlace no tiene un código de sala válido. Pídele el código otra vez a la persona que te invitó.</p>
+
+<section><h2>¿Todavía no tienes la app?</h2><div class="actions"><a class="button" href="https://apps.apple.com/app/movieforus/id6811587180">Descargar en el App Store</a></div>
+<p>Muy pronto en Google Play para Android.</p>
+<ol><li>Descarga MovieForUs y ábrela.</li><li>En la pestaña Perfil, toca “Abrir o unirse a una sala”.</li><li>Escribe el código de arriba y toca “Unirse”.</li></ol></section>
+
+<script>
+(function () {
+  var code = (new URLSearchParams(location.search).get('code') || '').toUpperCase();
+  if (!/^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{6}$/.test(code)) code = '';
+  var shown = document.getElementById('room-code');
+  var open = document.getElementById('open-room');
+  if (code) {
+    shown.textContent = code;
+    open.href = 'movieforus://room/' + code;
+  } else {
+    document.getElementById('with-code').hidden = true;
+    document.getElementById('no-code').hidden = false;
+  }
+})();
+</script>
+
+</main>
+<footer class="foot"><div class="foot-in">
+  <div class="foot-brand">
+    <a class="brand" href="es.html"><img src="logo.png" alt="" width="30" height="30"><span class="wordmark">Movie<span class="for">For</span>Us</span></a>
+    <p>Una app de citas basada en tu gusto por el cine.</p>
+    <p><a href="mailto:support@movieforus.com">support@movieforus.com</a></p>
+    <p><a class="foot-insta" href="https://www.instagram.com/movieforusapp/"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram @movieforusapp</span></a></p>
+  </div>
+  <nav class="foot-links"><a href="privacidad.html">Política de privacidad</a><a href="terminos.html">Términos de uso</a><a href="soporte.html">Soporte</a><a href="eliminar-cuenta.html">Eliminar tu cuenta</a><a href="seguridad-infantil.html">Seguridad infantil</a><a href="./">Türkçe</a><a href="en.html">English</a></nav>
+  <div class="foot-legal">
+    <a class="tmdb" href="https://www.themoviedb.org/"><img src="tmdb-logo.svg" alt="TMDB"></a>
+    <p>This application uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.</p>
+    <p>Esta aplicación usa TMDB y las API de TMDB, pero no está avalada, certificada ni aprobada de ninguna otra forma por TMDB.</p>
+    <p>© 2026 MovieForUs</p>
+  </div>
+</div></footer>
+</body>
+</html>
