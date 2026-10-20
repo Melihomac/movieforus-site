@@ -698,7 +698,7 @@ mark { background: #ffd60a; color: #000; padding: 0 4px; border-radius: 4px; }
 .pill-button.soon { color: var(--muted); cursor: default; }
 .pill-button.small { min-height: 36px; padding: 0 16px; font-size: 13px; }
 .note { color: var(--muted); font-size: 14px; margin: 14px 0 0; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 40px 0 0; max-width: 600px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 40px 0 0; max-width: 460px; }
 .stats div { border-left: 2px solid rgba(255,55,95,.5); padding: 2px 0 2px 14px; }
 .stats dt { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
 .stats dd { margin: 2px 0 0; color: var(--muted); font-size: 13px; line-height: 1.35; }
@@ -724,7 +724,7 @@ mark { background: #ffd60a; color: #000; padding: 0 4px; border-radius: 4px; }
   .float-chip { left: 0; bottom: 40px; }
 }
 @media (max-width: 560px) {
-  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+  .stats { gap: 18px 12px; }
   .hero-art { height: 500px; }
   .hero-art .phone { width: 240px; }
   .phone-back { display: none; }

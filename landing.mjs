@@ -28,7 +28,6 @@ const T = {
     note: 'iPhone için ücretsiz · 18 yaş ve üzeri',
     stats: [
       ['8 film', 'Ortak zevk eşiği'],
-      ['300 km', 'Eşleşme mesafesi'],
       ['Günde 3', 'Yeni eşleşme'],
       ['Ücretsiz', 'Abonelik yok'],
     ],
@@ -123,7 +122,6 @@ const T = {
     note: 'Free for iPhone · 18 and over',
     stats: [
       ['8 films', 'to tell your taste'],
-      ['300 km', 'matching radius'],
       ['3 a day', 'new matches'],
       ['Free', 'no subscription'],
     ],
@@ -220,7 +218,6 @@ const T = {
     note: 'Gratis para iPhone · Mayores de 18',
     stats: [
       ['8 películas', 'para conocer tu gusto'],
-      ['300 km', 'radio para hacer match'],
       ['3 al día', 'nuevos matches'],
       ['Gratis', 'sin suscripción'],
     ],
