@@ -474,7 +474,7 @@ export function landingBody(lang, { appStore, playStore, clubs, escape }) {
 
 <section class="cta">
   <div class="wrap cta-in">
-    <img src="logo.png" alt="" width="72" height="72" class="cta-logo">
+    <img src="logo.png?v=2" alt="" width="72" height="72" class="cta-logo">
     <h2>${t.ctaTitle}</h2>
     <p class="section-lead">${t.ctaLead}</p>
     ${stores}

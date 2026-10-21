@@ -208,15 +208,15 @@ ${Languages.map((l) => `<link rel="alternate" hreflang="${l}" href="${urlOf(vers
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google shows a site's icon only when it is square and a multiple of
      48 px: logo.png is 192 px, favicon.ico carries 16, 32 and 48. -->
-<link rel="icon" href="favicon.ico" sizes="48x48">
-<link rel="icon" href="logo.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="logo.png">
+<link rel="icon" href="favicon.ico?v=2" sizes="48x48">
+<link rel="icon" href="logo.png?v=2" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="logo.png?v=2">
 ${home ? structuredData(lang) : ''}
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top"><div class="top-in">
-  <a class="brand" href="${homeOf(lang)}"><img src="logo.png" alt="" width="30" height="30">${wordmark}</a>
+  <a class="brand" href="${homeOf(lang)}"><img src="logo.png?v=2" alt="" width="30" height="30">${wordmark}</a>
   <nav class="top-links${home ? ' sections' : ''}">${links}</nav>
   <div class="top-right">${other}<a class="insta" href="${insta}" aria-label="Instagram ${handle}">${instaIcon}</a><a class="get" href="${CONFIG.appStore}">${getLabel(lang)} →</a></div>
 </div></header>
@@ -225,7 +225,7 @@ ${body}
 </main>
 <footer class="foot"><div class="foot-in">
   <div class="foot-brand">
-    <a class="brand" href="${homeOf(lang)}"><img src="logo.png" alt="" width="30" height="30">${wordmark}</a>
+    <a class="brand" href="${homeOf(lang)}"><img src="logo.png?v=2" alt="" width="30" height="30">${wordmark}</a>
     <p>${{ tr: 'Film zevkine göre tanışma uygulaması.', en: 'A dating app built on taste in films.', es: 'Una app de citas basada en tu gusto por el cine.' }[lang]}</p>
     <p><a href="mailto:${CONFIG.email}">${CONFIG.email}</a></p>
     <p><a class="foot-insta" href="${insta}">${instaIcon}<span>Instagram ${handle}</span></a></p>
